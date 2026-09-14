@@ -1,0 +1,21 @@
+# Build
+target/
+release/
+
+# Eclipse
+.settings/
+.project
+.classpath
+bin/
+
+# IntelliJ
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Lokale Hilfsdateien (nicht Teil des Plugins)
+.claude/
+GEMINI-PROMPT.md

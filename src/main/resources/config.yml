@@ -1,0 +1,60 @@
+# Name der Welt, in der Varo aufgebaut werden darf.
+# /varosetup verweigert den Aufbau in jeder anderen Welt, damit die
+# Worldborder niemals versehentlich Spawn- oder Survival-Welten trifft.
+arena-world: varo
+
+# Welt, in die /leave zurückteleportiert (euer Hub/Spawn).
+lobby-world: world
+
+# Befehle, die in der Varo-Welt gesperrt sind, solange eine Runde vorbereitet
+# wird oder läuft. Ohne Slash, Aliase einzeln aufführen. Teleports sind
+# grundsätzlich tabu - sonst holt man Leute rein/raus oder flieht per /back.
+blocked-commands:
+  - shop
+  - tpa
+  - tpahere
+  - tpaccept
+  - tphere
+  - back
+  - spawn
+  - warp
+  - rtp
+
+# Zusätzliche Diamantadern pro neu erzeugtem Chunk in der Varo-Welt
+# (Vanilla hat etwa eine). 0 schaltet den Bonus ab.
+extra-diamond-veins-per-chunk: 2
+# Zuckerrohr an Ufern deutlich häufiger als in Vanilla, plus gelegentlich
+# ein kleiner Tümpel in trockenen Gegenden (für Papier/Zaubertisch).
+extra-sugar-cane: true
+
+# Belohnungen für jeden Sieger, als Konsolenbefehle. %player% wird ersetzt.
+# Beispiele: "eco give %player% 1000" (EssentialsX), "points give %player% 50"
+# (PlayerPoints). Leer lassen = keine Belohnung.
+win-rewards: []
+# So wird die Belohnung in der Sieger-Nachricht angezeigt (&-Farbcodes).
+# Leer lassen = Zeile wird nicht angezeigt.
+win-rewards-text: ""
+
+# Befehle, die nur während der Farmzeit gesperrt sind.
+farm-blocked-commands:
+  - ah
+  - sethome
+  - home
+
+# Standardwerte für eine Runde. Lassen sich im Spiel über /varo -> Admin ->
+# Einstellungen ändern, dieser Abschnitt wird dabei überschrieben.
+defaults:
+  border-size: 2000
+  farm-minutes: 20
+  target-size: 500
+  shrink-minutes: 30
+  # Respawns pro Spieler (blaue Herzen). Jeder Tod mit Herz übrig löscht
+  # eines und es geht nach 5 Sekunden mit Elytra von oben weiter; der Tod
+  # ohne Herz ist endgültig. 0 = klassisches Varo.
+  lives: 3
+  # Sekunden Countdown mit Titel-Einblendung vor dem Drop (0 = sofort).
+  countdown-seconds: 5
+  # Chunk-Radius, der beim Aufbau rund um die Arena vorgeneriert wird (0 = aus).
+  preload-chunk-radius: 10
+  # Weltzeit beim Aufbau und beim Drop; -1 lässt die Zeit unverändert.
+  start-time: 1000

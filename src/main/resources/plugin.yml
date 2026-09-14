@@ -1,0 +1,64 @@
+name: SpeedVaro
+version: '${project.version}'
+main: de.kato.varo.VaroMain
+api-version: '1.21'
+author: HrKato
+description: Battle-royale style Speed-Varo minigame - elytra drop, lives, teams, shrinking border
+website: https://github.com/HrKato4949/SpeedVaro
+
+commands:
+  varo:
+    description: Öffnet das Varo-Menü; /varo reload lädt die Config neu
+    usage: /<command> [reload]
+  varosetup:
+    description: Erstellt eine neue Varo-Arena (Käfig + Worldborder)
+    usage: /<command> [bordergröße]
+    permission: varo.admin
+  varostart:
+    description: Startet den Drop und den Farmzeit-Timer
+    usage: /<command> [farmMinuten] [zielGröße] [schrumpfSekunden]
+    permission: varo.admin
+  varoaccept:
+    description: Nimmt eine Varo-Einladung an
+    usage: /<command>
+  varocancel:
+    description: Lehnt eine Varo-Einladung ab
+    usage: /<command>
+  varospec:
+    description: Zuschauer-Menü zum Teleportieren zu lebenden Spielern
+    usage: /<command>
+    aliases: [spec]
+  varoanvil:
+    description: Öffnet den Amboss aus dem Inventar direkt
+    usage: /<command>
+    aliases: [anvil]
+  varoenchant:
+    description: Öffnet den Zaubertisch aus dem Inventar direkt (wie mit 15 Regalen)
+    usage: /<command>
+    aliases: [enchant]
+  varobackpack:
+    description: Öffnet den gemeinsamen Backpack deines Teams
+    usage: /<command>
+    aliases: [backpack, bp]
+  varoleave:
+    description: Bringt dich aus der Varo-Welt zurück zum Spawn
+    usage: /<command>
+    aliases: [leave]
+  varoreset:
+    description: Setzt Border und Weltspawn der Varo-Welt zurück
+    usage: /<command>
+    permission: varo.admin
+  varosafenet:
+    description: Schaltet das Join-Sicherheitsnetz (Auto-Teleport in den Käfig) ein oder aus
+    usage: /<command> <on|off>
+    permission: varo.admin
+
+permissions:
+  varo.admin:
+    description: Zugriff auf Varo-Admin-Befehle (schließt varo.invite ein)
+    default: op
+    children:
+      varo.invite: true
+  varo.invite:
+    description: Darf Spieler zu Varo einladen
+    default: false

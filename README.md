@@ -11,7 +11,7 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 ## Requirements
 
 **Required**
-- **Paper 1.21.4 or newer** (Spigot is not supported – the plugin uses Paper's Adventure API)
+- **Paper 1.21 or newer** (Spigot is not supported – the plugin uses Paper's Adventure API)
 - **Java 21**
 - **A separate arena world.** SpeedVaro never builds in your main world; it needs its own world named as configured in `arena-world` (default `varo`). The plugin does not create worlds itself, so you need a world manager such as **[Multiverse-Core](https://modrinth.com/plugin/multiverse-core)**: `/mv create varo NORMAL`.
 
@@ -35,9 +35,11 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 
 **Teams** – Up to 8 colour-coded teams, created and joined in the menu. Team colour and `[Team X]` prefix above the head and in the tab list. Teammates never damage each other but still knock each other back ("boosting"). Shared 27-slot **team backpack**, and sneak + right-click on a teammate opens their inventory.
 
-**Farm-time quality of life** – No damage, no hunger, no PvP. Ores drop as ingots and animals drop cooked food (auto-smelter). Whole trees fall with one log. Drops go straight into your inventory. Wooden tools craft as iron, diamond tools craft enchanted (Efficiency IV, Unbreaking III). `/anvil` and `/enchant` open a virtual anvil or a full-power (15-bookshelf) enchanting table if you carry the block.
+**Farm-time quality of life** – No damage, no hunger, no PvP, and night vision for everyone until the fight starts. Ores drop as ingots and animals drop cooked food (auto-smelter). Whole trees fall with one log. Drops go straight into your inventory. Wooden tools craft as iron, diamond tools craft enchanted (Efficiency IV, Unbreaking III). `/anvil` and `/enchant` open a virtual anvil or a full-power (15-bookshelf) enchanting table if you carry the block.
 
 **Uniform food** – Animals only drop cooked beef (plus leather and wool), so nobody hauls around five kinds of meat.
+
+**No hostile mobs** – Zombies, creepers, phantoms and friends never spawn in the arena world while a round is prepared or running; animals are unaffected. No gamerules to set.
 
 **Cave elevator** – Every player gets a one-time item at the drop: right-click below Y=0 to teleport straight up to the surface.
 
@@ -129,6 +131,9 @@ farm-blocked-commands:     # blocked only during farm time
 
 extra-diamond-veins-per-chunk: 2   # 0 = off
 extra-sugar-cane: true
+
+block-hostile-mobs: true   # no natural hostile spawns in the arena world (spawn eggs and /summon still work)
+farm-night-vision: true    # night vision from the drop until the fight starts
 
 win-rewards:               # console commands per winner, %player% is replaced
   - "eco give %player% 1000"

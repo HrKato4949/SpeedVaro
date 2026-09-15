@@ -2,9 +2,24 @@
 
 A lightweight, self-contained **Varo / Speed-UHC / battle-royale** minigame for Paper servers. Players drop from a glass cage in the sky with elytras, farm in peace for a while, then fight inside a shrinking world border. Everything is controlled through in-game menus – no command memorising required.
 
-> **Language note:** all in-game texts, menus and messages are currently **German**. The plugin works on any server, but your players will see German text.
+> **Languages:** English by default, German included – set `language: de` in the config. Every message lives in `messages_en.yml` / `messages_de.yml` in the plugin folder, so you can adjust texts or add your own language file.
 
-Built for **Paper 1.21+** (Java 21). No dependencies.
+Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see requirements below.
+
+---
+
+## Requirements
+
+**Required**
+- **Paper 1.21.4 or newer** (Spigot is not supported – the plugin uses Paper's Adventure API)
+- **Java 21**
+- **A separate arena world.** SpeedVaro never builds in your main world; it needs its own world named as configured in `arena-world` (default `varo`). The plugin does not create worlds itself, so you need a world manager such as **[Multiverse-Core](https://modrinth.com/plugin/multiverse-core)**: `/mv create varo NORMAL`.
+
+**Optional – works with, not required**
+- **A permissions plugin** (e.g. LuckPerms) to hand out `varo.admin` / `varo.invite` to non-ops
+- **An economy or points plugin** (EssentialsX, PlayerPoints, …) if you want winner rewards – the plugin runs whatever console commands you put in `win-rewards`
+- **Chunky** to pre-generate the whole arena area (SpeedVaro pre-generates only the centre)
+- **TAB** – compatible, but its nametag feature must be disabled for the arena world so team prefixes show (`scoreboard-teams.disable-condition: '%world%=varo'`)
 
 ---
 
@@ -93,6 +108,7 @@ Aliases only work if no other plugin claims the same name; the `varo…` form al
 Generated as `plugins/SpeedVaro/config.yml`. The `defaults` section can also be edited in-game via the settings menu.
 
 ```yaml
+language: en               # en or de; add messages_<code>.yml for more
 arena-world: varo          # the only world /varosetup may build in
 lobby-world: world         # where /leave, reset and the post-game return go
 
@@ -129,7 +145,11 @@ defaults:
   start-time: 1000         # world time at build/drop, -1 = leave unchanged
 ```
 
-`/varo reload` applies changes. New keys are added to an existing config automatically; existing lists are never overwritten.
+`/varo reload` applies config and message changes. New keys are added to an existing config automatically; existing lists are never overwritten.
+
+### Translating
+
+`messages_en.yml` and `messages_de.yml` are copied into `plugins/SpeedVaro/` on first start. To add a language, copy `messages_en.yml` to `messages_<code>.yml`, translate the values (keep the `{0}` placeholders and `&` colour codes), and set `language: <code>`. Any key missing from your file falls back to English.
 
 ---
 

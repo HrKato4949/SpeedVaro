@@ -1,3 +1,5 @@
+![SpeedVaro_Banner](https://cdn.modrinth.com/data/qxPeA7DR/images/73b5e351487e55a786fc7cad2c7d08f905e0e32e.png)
+
 # SpeedVaro – Hero Island Drop
 
 A lightweight, self-contained **Varo / Speed-UHC / battle-royale** minigame for Paper servers. Players drop from a glass cage in the sky with elytras, farm in peace for a while, then fight inside a shrinking world border. Everything is controlled through in-game menus – no command memorising required.
@@ -8,50 +10,29 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 
 ---
 
-## Requirements
-
-**Required**
-- **Paper 1.21 or newer** (Spigot is not supported – the plugin uses Paper's Adventure API)
-- **Java 21**
-- **A separate arena world.** SpeedVaro never builds in your main world; it needs its own world named as configured in `arena-world` (default `varo`). The plugin does not create worlds itself, so you need a world manager such as **[Multiverse-Core](https://modrinth.com/plugin/multiverse-core)**: `/mv create varo NORMAL`.
-
-**Optional – works with, not required**
-- **A permissions plugin** (e.g. LuckPerms) to hand out `varo.admin` / `varo.invite` to non-ops
-- **An economy or points plugin** (EssentialsX, PlayerPoints, …) if you want winner rewards – the plugin runs whatever console commands you put in `win-rewards`
-- **Chunky** to pre-generate the whole arena area (SpeedVaro pre-generates only the centre)
-- **TAB** – compatible, but its nametag feature must be disabled for the arena world so team prefixes show (`scoreboard-teams.disable-condition: '%world%=varo'`)
-
----
-
 ## Features
 
-**Phase system** – Lobby → Farm time → Fight (shrinking border) → Winner celebration. The scoreboard shows the current phase, countdown, live border size, players alive and your team.
-
-**Elytra drop** – The round starts with a 5-second countdown. The glass cage dissolves and every participant glides down with an unbreakable flight elytra to the landing spot of their choice. The elytra can't be removed, dropped or kept, and disappears on landing.
-
-**Lives (blue hearts)** – Every player starts with a configurable number of respawns (default 3). Dying with a heart left keeps your inventory: you hover as a spectator above the arena for 5 seconds, then glide down again. Dying with no hearts left is final.
-
-**Loot chest** – On a final death the whole inventory (armour and offhand included, exact durability and enchantments) goes into a double chest at the death spot with a floating 60-second timer. The chest can be opened but not broken, and vanishes with its contents when the timer ends.
-
-**Teams** – Up to 8 colour-coded teams, created and joined in the menu. Team colour and `[Team X]` prefix above the head and in the tab list. Teammates never damage each other but still knock each other back ("boosting"). Shared 27-slot **team backpack**, and sneak + right-click on a teammate opens their inventory.
-
-**Farm-time quality of life** – No damage, no hunger, no PvP, and night vision for everyone until the fight starts. Ores drop as ingots and animals drop cooked food (auto-smelter). Whole trees fall with one log. Drops go straight into your inventory. Wooden tools craft as iron, diamond tools craft enchanted (Efficiency IV, Unbreaking III). `/anvil` and `/enchant` open a virtual anvil or a full-power (15-bookshelf) enchanting table if you carry the block.
-
-**Uniform food** – Animals only drop cooked beef (plus leather and wool), so nobody hauls around five kinds of meat.
-
-**No hostile mobs** – Zombies, creepers, phantoms and friends never spawn in the arena world while a round is prepared or running; animals are unaffected. No gamerules to set.
-
-**Cave elevator** – Every player gets a one-time item at the drop: right-click below Y=0 to teleport straight up to the surface.
-
-**Fair arena locations** – `/varosetup` searches for a random spot 10 000–50 000 blocks out, rejecting oceans, rivers, deserts, frozen biomes and anything below sea level, and never reuses an area. The surrounding chunks are pre-generated so nobody drops into unloaded terrain.
-
-**Better world generation** – Extra diamond veins and much more sugar cane along shores in newly generated chunks of the arena world (both configurable).
-
-**Safe inventories** – Entering the arena world stores your normal inventory and XP on disk; leaving restores them. Arena loot never leaves the arena.
-
-**Winner celebration** – Title and fanfare, server-wide announcement, fireworks in team colour, configurable reward commands for every winner, and everyone returns to spawn after 10 seconds.
-
-**Locked down** – Configurable command blocking (shops, teleports, `/back`, `/home` …), no Nether portals, death-chest protection, and an invitation system with clickable **[Accept] / [Decline]** chat buttons so only invited players can join.
+* **Phase System:** Smooth progression from Lobby → Farm time → Fight (shrinking border) → Winner celebration. The live scoreboard tracks the current phase, countdown, border size, players alive, and your team.
+* **Elytra Drop:** Rounds begin with a 5-second countdown. The glass cage dissolves, and every participant glides down with an unbreakable flight elytra to a landing spot of their choice. The elytra disappears upon landing.
+* **Lives & Respawn (Blue Hearts):** Players start with a configurable number of respawns (default: 3). Dying with hearts left keeps your inventory: you hover as a spectator above the arena for 5 seconds, then glide down again. A death without hearts left is final.
+* **Death Loot Chests:** On final death, the complete inventory (armor, offhand, exact durability, and enchantments) is secured in a double chest at the death spot with a floating 60-second timer. The chest can be opened but not broken, and vanishes with its contents when the timer ends.
+* **Teams & Shared Backpack:** Create and join up to 8 color-coded teams via the menu. Team colors and `[Team X]` prefixes show in the tab list and above heads. Teammates cannot damage each other (though knockback/boosting remains active) and share a 27-slot **team backpack**. Sneak + right-click a teammate to view their inventory.
+* **Farm-Time Quality of Life:**
+  * No damage, no hunger, and no PvP during the farming phase.
+  * Night vision for everyone from the drop until the fight starts – caves and nights are no obstacle.
+  * Ores drop as ingots, and animals drop cooked food automatically (auto-smelter).
+  * Whole trees fall when chopping a single log, and drops go straight into your inventory.
+  * Wooden tools craft as iron; diamond tools craft pre-enchanted (*Efficiency IV, Unbreaking III*).
+  * Virtual `/anvil` and `/enchant` tables (full 15-bookshelf power) available on the go if you carry the block.
+* **No Hostile Mobs:** Zombies, creepers, phantoms and friends never spawn in the arena world while a round is prepared or running. Animals are unaffected, spawn eggs and `/summon` still work – no gamerules to set.
+* **Uniform Food:** Animals drop cooked beef (plus leather and wool) to keep food management streamlined.
+* **Cave Elevator:** A one-time use item given at the drop – right-click below Y=0 to teleport straight back to the surface.
+* **Fair Arena Locations:** `/varosetup` searches for a random location 10,000–50,000 blocks out, filtering out oceans, rivers, deserts, and low elevations, never reuses an area, and pre-generates the surrounding chunks so nobody drops into unloaded terrain.
+* **Better World Generation:** Extra diamond veins and much more sugar cane along shores in newly generated arena chunks (both configurable).
+* **Safe Inventories:** Normal player inventories and XP are safely stored on disk when entering the arena world and fully restored upon leaving. Arena loot never leaves the arena.
+* **Winner Celebration:** Title and fanfare, server-wide announcement, fireworks in team colour, configurable reward commands for every winner, and everyone returns to spawn after 10 seconds.
+* **Locked Down:** Command blocking (shops, teleports, `/home`, `/back`), disabled Nether portals, and an invitation system with clickable **[Accept] / [Decline]** chat buttons.
+* **Multilingual:** English and German out of the box; every message is editable and additional languages are a single YAML file away.
 
 ---
 
@@ -69,26 +50,20 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 
 ### Players
 
-| Command | Aliases | Description |
-|---|---|---|
-| `/varo` | | Opens the main menu (join/leave, teams, backpack, spectate) |
-| `/varoaccept` | | Accept an invitation and enter the lobby |
-| `/varocancel` | | Decline an invitation |
-| `/varoleave` | `/leave` | Leave the arena world and get your normal inventory back |
-| `/varobackpack` | `/backpack`, `/bp` | Open your team's shared chest |
-| `/varospec` | `/spec` | Spectator menu – teleport to living players (spectators only) |
-| `/varoanvil` | `/anvil` | Open an anvil if you carry one |
-| `/varoenchant` | `/enchant` | Open an enchanting table (15-bookshelf power) if you carry one |
+* `/varo` – Opens the main menu (join/leave, teams, backpack, spectate)
+* `/varoaccept` / `/varocancel` – Accept or decline a game invitation
+* `/varoleave` (`/leave`) – Leave the arena and restore your normal inventory
+* `/varobackpack` (`/backpack`, `/bp`) – Open your team's shared chest
+* `/varospec` (`/spec`) – Spectator menu to teleport to living players
+* `/varoanvil` (`/anvil`) / `/varoenchant` (`/enchant`) – Open virtual workstations
 
 ### Admins (`varo.admin`) – all also available as buttons in `/varo` → Admin
 
-| Command | Description |
-|---|---|
-| `/varosetup [borderSize]` | Find a location, build the cage, open the lobby |
-| `/varostart [farmMin] [targetSize] [shrinkSec]` | Countdown, drop, start the round |
-| `/varoreset` | Restore the arena world (border to max, safe spawn, send everyone home) |
-| `/varosafenet <on\|off>` | Auto-teleport joining players into the cage while the lobby is open |
-| `/varo reload` | Reload `config.yml` without a restart |
+* `/varosetup [borderSize]` – Find a location, build the cage, and open the lobby
+* `/varostart [farmMin] [targetSize] [shrinkSec]` – Start the countdown and drop
+* `/varoreset` – Reset the arena world and send everyone home
+* `/varosafenet <on|off>` – Auto-teleport joining players into the cage during the lobby phase
+* `/varo reload` – Reload config and messages without restarting
 
 The admin menu additionally offers a **Settings** page (border size, farm time, target size, shrink time, lives, countdown, chunk pre-generation, start time of day) and **Remove player** for participants who went offline and would otherwise block the win.
 
@@ -98,16 +73,14 @@ Aliases only work if no other plugin claims the same name; the `varo…` form al
 
 ## Permissions
 
-| Permission | Default | Grants |
-|---|---|---|
-| `varo.admin` | op | All admin commands and menus, joining without invitation. Includes `varo.invite`. |
-| `varo.invite` | false | Only the *Invite players* button – for helpers who may invite but not run the round |
+* `varo.admin` (default: op) – All admin commands and menus, joining without invitation. Includes `varo.invite`.
+* `varo.invite` (default: false) – Only the *Invite players* button – for helpers who may invite but not run the round.
 
 ---
 
 ## Configuration
 
-Generated as `plugins/SpeedVaro/config.yml`. The `defaults` section can also be edited in-game via the settings menu.
+Generated automatically as `plugins/SpeedVaro/config.yml`. Fully customizable border sizes, timer durations, lives, rewards, blocked commands and language. The `defaults` section can also be edited in-game via the settings menu, and `/varo reload` applies config and message changes without a restart.
 
 ```yaml
 language: en               # en or de; add messages_<code>.yml for more
@@ -150,33 +123,34 @@ defaults:
   start-time: 1000         # world time at build/drop, -1 = leave unchanged
 ```
 
-`/varo reload` applies config and message changes. New keys are added to an existing config automatically; existing lists are never overwritten.
-
 ### Translating
 
 `messages_en.yml` and `messages_de.yml` are copied into `plugins/SpeedVaro/` on first start. To add a language, copy `messages_en.yml` to `messages_<code>.yml`, translate the values (keep the `{0}` placeholders and `&` colour codes), and set `language: <code>`. Any key missing from your file falls back to English.
 
 ---
 
-## Setup
+## Requirements
 
-1. Drop `SpeedVaro-x.y.z.jar` into `plugins/` and restart.
-2. Create a dedicated arena world, e.g. with Multiverse: `/mv create varo NORMAL`. The plugin refuses to build anywhere else, so your survival and hub worlds are never touched by the border.
-3. Set `lobby-world` in the config to your hub/spawn world.
-4. Optional: for a fully pre-generated arena, run Chunky on the coordinates printed by `/varosetup`.
+**Required**
+* **Paper 1.21 or newer** – tested on 1.21.1, 1.21.11 and 26.2 (Spigot is not supported – the plugin uses Paper's Adventure API)
+* **Java 21**
+* **A separate arena world.** SpeedVaro never builds in your main world; it needs its own world named as configured in `arena-world` (default `varo`). The plugin does not create worlds itself, so you need a world manager such as **[Multiverse-Core](https://modrinth.com/plugin/multiverse-core)**: `/mv create varo NORMAL`.
 
-### Compatibility notes
+No gamerules or other world settings are needed – mob spawning and night vision are handled by the plugin.
 
-- **TAB** (or other tab-list/nametag plugins): team prefixes above the head only show if the plugin leaves the arena world alone – for TAB set `scoreboard-teams.disable-condition: '%world%=varo'`.
-- **EssentialsSpawn**: respawn handling is compatible; the plugin overrides the respawn location for arena deaths.
-- Works with any economy/points plugin through the `win-rewards` console commands.
+**Optional – works with, not required**
+* **A permissions plugin** (e.g. LuckPerms) to hand out `varo.admin` / `varo.invite` to non-ops
+* **An economy or points plugin** (EssentialsX, PlayerPoints, …) if you want winner rewards – the plugin runs whatever console commands you put in `win-rewards`
+* **Chunky** to pre-generate the whole arena area (SpeedVaro pre-generates only the centre)
+* **TAB** – compatible, but its nametag feature must be disabled for the arena world so team prefixes show (`scoreboard-teams.disable-condition: '%world%=varo'`)
 
 ---
 
-## Building
+## Setup
 
-Maven, Java 21: `mvn clean package` → `target/SpeedVaro-<version>.jar`.
+1. Drop `SpeedVaro-x.y.z.jar` into `plugins/` and restart.
+2. Create the arena world, e.g. `/mv create varo NORMAL`.
+3. Set `lobby-world` in the config to your hub/spawn world (and `language` if you want German).
+4. Optional: for a fully pre-generated arena, run Chunky on the coordinates printed by `/varosetup`.
 
-## License
-
-GPL-3.0 – see `LICENSE`.
+Source code and issue tracker: [github.com/HrKato4949/SpeedVaro](https://github.com/HrKato4949/SpeedVaro) · License: GPL-3.0

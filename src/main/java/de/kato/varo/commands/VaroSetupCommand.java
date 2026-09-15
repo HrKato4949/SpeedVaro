@@ -2,11 +2,13 @@ package de.kato.varo.commands;
 
 import de.kato.varo.ArenaState;
 import de.kato.varo.Cage;
+import de.kato.varo.Lang;
 import de.kato.varo.UsedLocations;
 import de.kato.varo.VaroGame;
 import de.kato.varo.VaroSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -69,7 +71,7 @@ public class VaroSetupCommand implements CommandExecutor {
             try {
                 borderSize = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                sender.sendMessage("§cDie Border-Größe muss eine Zahl sein.");
+                sender.sendMessage(Lang.get("setup.size-not-a-number"));
                 return true;
             }
         }
@@ -84,12 +86,12 @@ public class VaroSetupCommand implements CommandExecutor {
 
         World world = Bukkit.getWorld(arenaWorld);
         if (world == null) {
-            sender.sendMessage("§cDie Varo-Welt §f'" + arenaWorld + "'§c wurde nicht gefunden.");
-            sender.sendMessage("§7Erstelle sie mit §f/mv create " + arenaWorld + " NORMAL§7 oder passe §farena-world§7 in der config.yml an.");
+            sender.sendMessage(Lang.get("setup.arena-world-missing", arenaWorld));
+            sender.sendMessage(Lang.get("setup.arena-world-hint", arenaWorld));
             return;
         }
 
-        sender.sendMessage("§eSuche einen geeigneten Ort...");
+        sender.sendMessage(Lang.get("setup.searching"));
         searchLocation(sender, world, borderSize, MAX_ATTEMPTS);
     }
 
@@ -103,7 +105,7 @@ public class VaroSetupCommand implements CommandExecutor {
      */
     private void searchLocation(CommandSender sender, World world, int borderSize, int attemptsLeft) {
         if (attemptsLeft <= 0) {
-            sender.sendMessage("§cKein geeigneter Ort gefunden. Führe den Befehl einfach nochmal aus.");
+            sender.sendMessage(Lang.get("setup.no-location"));
             return;
         }
 
@@ -134,7 +136,11 @@ public class VaroSetupCommand implements CommandExecutor {
             return false;
         }
 
-        String biome = world.getBiome(centerX, surface.getY(), centerZ).getKey().getKey();
+        // Über Keyed statt direkt über Biome: Biome war bis 1.21.2 eine Enum und
+        // ist seit 1.21.3 ein Interface - der Aufruf über die gemeinsame
+        // Schnittstelle funktioniert auf beiden Seiten dieser Grenze.
+        Keyed biomeKey = world.getBiome(centerX, surface.getY(), centerZ);
+        String biome = biomeKey.getKey().getKey();
         for (String blocked : BLOCKED_BIOMES) {
             if (biome.contains(blocked)) {
                 return false;
@@ -205,11 +211,10 @@ public class VaroSetupCommand implements CommandExecutor {
             player.teleport(cage);
         }
 
-        sender.sendMessage("§aVaro-Arena erstellt in §f'" + world.getName() + "'§a!");
-        sender.sendMessage("§7Zentrum: §fX=" + centerX + " Z=" + centerZ
-                + " §8(" + usedLocations.size() + ". Arena)");
-        sender.sendMessage("§7Border-Größe: §f" + borderSize);
-        sender.sendMessage("§7Lobby ist offen - Spieler einladen über §f/varo§7.");
+        sender.sendMessage(Lang.get("setup.created", world.getName()));
+        sender.sendMessage(Lang.get("setup.center", centerX, centerZ, usedLocations.size()));
+        sender.sendMessage(Lang.get("setup.border-size", borderSize));
+        sender.sendMessage(Lang.get("setup.lobby-open"));
     }
 
     /** Erzeugt die Chunks rund um das Arena-Zentrum asynchron im Hintergrund. */

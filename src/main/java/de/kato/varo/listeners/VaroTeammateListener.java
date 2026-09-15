@@ -1,5 +1,6 @@
 package de.kato.varo.listeners;
 
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import de.kato.varo.VaroTeam;
 import org.bukkit.Material;
@@ -55,6 +56,6 @@ public class VaroTeammateListener implements Listener {
 
         event.setCancelled(true);
         player.openInventory(target.getInventory());
-        player.sendMessage("§7Inventar von §f" + target.getName() + "§7 geöffnet.");
+        player.sendMessage(Lang.get("team.inventory-opened", target.getName()));
     }
 }

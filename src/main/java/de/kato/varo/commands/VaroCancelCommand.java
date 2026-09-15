@@ -1,5 +1,6 @@
 package de.kato.varo.commands;
 
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,17 +21,17 @@ public class VaroCancelCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
+            sender.sendMessage(Lang.get("general.players-only"));
             return true;
         }
 
         if (!game.isInvited(player.getUniqueId())) {
-            player.sendMessage("§cDu hast keine offene Einladung.");
+            player.sendMessage(Lang.get("join.not-invited"));
             return true;
         }
 
         game.uninvite(player.getUniqueId());
-        player.sendMessage("§cEinladung abgelehnt.");
+        player.sendMessage(Lang.get("join.declined"));
         return true;
     }
 }

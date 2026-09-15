@@ -1,5 +1,6 @@
 package de.kato.varo.commands;
 
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import de.kato.varo.VaroTeam;
 import org.bukkit.command.Command;
@@ -21,7 +22,7 @@ public class VaroBackpackCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
+            sender.sendMessage(Lang.get("general.players-only"));
             return true;
         }
 
@@ -32,13 +33,13 @@ public class VaroBackpackCommand implements CommandExecutor {
     /** Auch vom /varo-Menü aus aufgerufen. */
     public void openBackpack(Player player) {
         if (!game.isInActiveArena(player)) {
-            player.sendMessage("§cDer Team-Backpack geht nur in der Varo-Welt.");
+            player.sendMessage(Lang.get("general.arena-only"));
             return;
         }
 
         VaroTeam team = game.getTeam(player.getUniqueId());
         if (team == null) {
-            player.sendMessage("§cDu bist in keinem Team.");
+            player.sendMessage(Lang.get("team.none"));
             return;
         }
 

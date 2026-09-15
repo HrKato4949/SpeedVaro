@@ -48,6 +48,7 @@ public final class VaroMain extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
+        Lang.load(this);
 
         VaroGame game = new VaroGame();
 
@@ -67,15 +68,17 @@ public final class VaroMain extends JavaPlugin {
         scoreboardManager = new VaroScoreboardManager(this, game);
         glideManager = new VaroGlideManager(this);
         VaroElevator elevator = new VaroElevator(this, game);
+        VaroNightVision nightVision = new VaroNightVision(this, game);
 
         VaroSetupCommand setupCommand = new VaroSetupCommand(this, game, settings, new UsedLocations(this));
-        VaroStartCommand startCommand = new VaroStartCommand(this, game, settings, glideManager, elevator);
+        VaroStartCommand startCommand = new VaroStartCommand(this, game, settings, glideManager, elevator,
+                nightVision);
         VaroResetCommand resetCommand = new VaroResetCommand(this, game);
         VaroBackpackCommand backpackCommand = new VaroBackpackCommand(game);
         VaroAcceptCommand acceptCommand = new VaroAcceptCommand(game);
         VaroDeathChest deathChest = new VaroDeathChest(this);
         VaroDeathListener deathListener = new VaroDeathListener(this, game, glideManager,
-                new VaroCelebration(this, game), deathChest);
+                new VaroCelebration(this, game), deathChest, nightVision);
         VaroGui gui = new VaroGui(this, game, settings, setupCommand, startCommand, resetCommand,
                 backpackCommand, acceptCommand, joinListener, deathListener);
 
@@ -83,7 +86,8 @@ public final class VaroMain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(inventoryListener, this);
         getServer().getPluginManager().registerEvents(deathListener, this);
         getServer().getPluginManager().registerEvents(deathChest, this);
-        getServer().getPluginManager().registerEvents(new VaroProtectionListener(game), this);
+        getServer().getPluginManager().registerEvents(new VaroProtectionListener(this, game), this);
+        getServer().getPluginManager().registerEvents(nightVision, this);
         commandListener = new VaroCommandListener(this, game);
         getServer().getPluginManager().registerEvents(commandListener, this);
         getServer().getPluginManager().registerEvents(new VaroToolListener(game), this);
@@ -114,7 +118,8 @@ public final class VaroMain extends JavaPlugin {
         getCommand("varospec").setExecutor(new VaroSpectateCommand(gui));
         getCommand("varocancel").setExecutor(new VaroCancelCommand(game));
 
-        Bukkit.getConsoleSender().sendMessage("§a[SpeedVaro] Version " + getDescription().getVersion() + " aktiviert.");
+        Bukkit.getConsoleSender().sendMessage("§a[SpeedVaro] Version " + getDescription().getVersion()
+                + " enabled (language: " + getConfig().getString("language", "en") + ").");
     }
 
     /**
@@ -159,9 +164,10 @@ public final class VaroMain extends JavaPlugin {
         }
     }
 
-    /** /varo reload: Config neu einlesen und alles nachziehen, was sie nur beim Start liest. */
+    /** /varo reload: Config und Sprachdateien neu einlesen und alles nachziehen, was sie nur beim Start liest. */
     private void reload() {
         reloadConfig();
+        Lang.load(this);
         commandListener.reload();
         applyPopulators();
     }
@@ -174,6 +180,6 @@ public final class VaroMain extends JavaPlugin {
         if (glideManager != null) {
             glideManager.stop();
         }
-        Bukkit.getConsoleSender().sendMessage("§c[SpeedVaro] Plugin deaktiviert.");
+        Bukkit.getConsoleSender().sendMessage("§c[SpeedVaro] Plugin disabled.");
     }
 }

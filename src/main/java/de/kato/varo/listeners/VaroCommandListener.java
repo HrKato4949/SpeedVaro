@@ -1,5 +1,6 @@
 package de.kato.varo.listeners;
 
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,7 +54,7 @@ public class VaroCommandListener implements Listener {
 
         if (blocked) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage("§cDieser Befehl ist während Varo gesperrt.");
+            event.getPlayer().sendMessage(Lang.get("protection.command-blocked"));
         }
     }
 

@@ -1,5 +1,6 @@
 package de.kato.varo.commands;
 
+import de.kato.varo.Lang;
 import de.kato.varo.gui.VaroGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,8 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * /varo - öffnet das Varo-Menü. /varo reload liest die config.yml neu ein
- * (Admins, auch von der Konsole), ohne den Server neu zu starten.
+ * /varo - öffnet das Varo-Menü. /varo reload liest die config.yml und die
+ * Sprachdateien neu ein (Admins, auch von der Konsole), ohne Neustart.
  */
 public class VaroMenuCommand implements CommandExecutor {
 
@@ -24,17 +25,17 @@ public class VaroMenuCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("varo.admin")) {
-                sender.sendMessage("§cDazu hast du keine Rechte.");
+                sender.sendMessage(Lang.get("general.no-permission"));
                 return true;
             }
             reload.run();
-            sender.sendMessage("§aVaro-Config neu geladen.");
-            sender.sendMessage("§7Neue Plugin-Versionen brauchen weiterhin einen Neustart.");
+            sender.sendMessage(Lang.get("reload.done"));
+            sender.sendMessage(Lang.get("reload.jar-hint"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDas Menü gibt es nur im Spiel. Von der Konsole geht §f/varo reload§c.");
+            sender.sendMessage(Lang.get("reload.console-hint"));
             return true;
         }
 

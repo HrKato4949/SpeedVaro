@@ -2,9 +2,11 @@ package de.kato.varo.commands;
 
 import de.kato.varo.ArenaState;
 import de.kato.varo.Cage;
+import de.kato.varo.Lang;
 import de.kato.varo.VaroElevator;
 import de.kato.varo.VaroGame;
 import de.kato.varo.VaroGlideManager;
+import de.kato.varo.VaroNightVision;
 import de.kato.varo.VaroSettings;
 
 import net.kyori.adventure.key.Key;
@@ -47,17 +49,20 @@ public class VaroStartCommand implements CommandExecutor {
     private final VaroSettings settings;
     private final VaroGlideManager glideManager;
     private final VaroElevator elevator;
+    private final VaroNightVision nightVision;
 
     /** Laufender Countdown - verhindert einen zweiten Start währenddessen. */
     private BukkitTask countdownTask;
 
     public VaroStartCommand(JavaPlugin plugin, VaroGame game, VaroSettings settings,
-                            VaroGlideManager glideManager, VaroElevator elevator) {
+                            VaroGlideManager glideManager, VaroElevator elevator,
+                            VaroNightVision nightVision) {
         this.plugin = plugin;
         this.game = game;
         this.settings = settings;
         this.glideManager = glideManager;
         this.elevator = elevator;
+        this.nightVision = nightVision;
     }
 
     @Override
@@ -71,7 +76,7 @@ public class VaroStartCommand implements CommandExecutor {
             if (args.length >= 2) targetSize = Double.parseDouble(args[1]);
             if (args.length >= 3) shrinkSeconds = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
-            sender.sendMessage("§cUngültige Parameter. Nutzung: /varostart [farmMinuten] [zielGröße] [schrumpfSekunden]");
+            sender.sendMessage(Lang.get("start.usage"));
             return true;
         }
 
@@ -84,28 +89,28 @@ public class VaroStartCommand implements CommandExecutor {
 
         ArenaState arena = game.getArena();
         if (arena == null) {
-            sender.sendMessage("§cEs wurde noch keine Arena erstellt. Führe zuerst /varosetup aus!");
+            sender.sendMessage(Lang.get("start.no-arena"));
             return;
         }
 
         if (game.getPhase() != VaroGame.Phase.LOBBY) {
-            sender.sendMessage("§cEs läuft bereits eine Runde. Nutze /varosetup für eine neue Arena.");
+            sender.sendMessage(Lang.get("start.already-running"));
             return;
         }
 
         if (game.getParticipants().isEmpty()) {
-            sender.sendMessage("§cKeine Teilnehmer angemeldet. Lade Spieler über §f/varo §cein.");
+            sender.sendMessage(Lang.get("start.no-participants"));
             return;
         }
 
         World world = Bukkit.getWorld(arena.worldName);
         if (world == null) {
-            sender.sendMessage("§cDie Welt '" + arena.worldName + "' wurde nicht gefunden!");
+            sender.sendMessage(Lang.get("general.world-missing", arena.worldName));
             return;
         }
 
         if (countdownTask != null) {
-            sender.sendMessage("§cDer Countdown läuft bereits.");
+            sender.sendMessage(Lang.get("start.countdown-running"));
             return;
         }
 
@@ -115,7 +120,7 @@ public class VaroStartCommand implements CommandExecutor {
             return;
         }
 
-        sender.sendMessage("§aCountdown läuft: §f" + countdown + " Sekunden§a bis zum Drop.");
+        sender.sendMessage(Lang.get("start.countdown-started", countdown));
         countdownTask = new BukkitRunnable() {
             private int remaining = countdown;
 
@@ -148,10 +153,10 @@ public class VaroStartCommand implements CommandExecutor {
 
     /** Große Zahl in der Bildschirmmitte plus Ton für alle in der Varo-Welt. */
     private void showCountdown(World world, int seconds) {
-        String color = seconds <= 3 ? "§c" : "§e";
+        String key = seconds <= 3 ? "start.countdown-title-final" : "start.countdown-title";
         Title title = Title.title(
-                LEGACY.deserialize(color + "§l" + seconds),
-                LEGACY.deserialize("§7Drop in..."),
+                LEGACY.deserialize(Lang.get(key, seconds)),
+                LEGACY.deserialize(Lang.get("start.countdown-subtitle")),
                 Title.Times.times(Duration.ZERO, Duration.ofMillis(900), Duration.ofMillis(100)));
 
         float pitch = seconds <= 3 ? 1.6f : 1.0f;
@@ -167,8 +172,8 @@ public class VaroStartCommand implements CommandExecutor {
                       int farmMinutes, double targetSize, int shrinkSeconds) {
 
         Title go = Title.title(
-                LEGACY.deserialize("§a§lGO!"),
-                LEGACY.deserialize("§7Viel Erfolg!"),
+                LEGACY.deserialize(Lang.get("start.go-title")),
+                LEGACY.deserialize(Lang.get("start.go-subtitle")),
                 Title.Times.times(Duration.ZERO, Duration.ofMillis(1500), Duration.ofMillis(500)));
         Sound launch = Sound.sound(Key.key("entity.firework_rocket.launch"), Sound.Source.MASTER, 1f, 1f);
         for (Player player : world.getPlayers()) {
@@ -209,9 +214,9 @@ public class VaroStartCommand implements CommandExecutor {
 
         // 3. Phase auf Farmzeit umstellen (füttert Scoreboard und /varo-Menü)
         game.startFarm(farmMinutes, targetSize, settings.getLives());
-        announce(world, "§a§lDer Drop hat begonnen! Viel Erfolg!");
-        announce(world, "§7Farmzeit: Bäume fallen komplett, Drops landen direkt im Inventar, Erze kommen als Barren.");
-        announce(world, "§7An Flüssen und Seen wächst reichlich Zuckerrohr - für Papier und Zaubertisch.");
+        for (String line : Lang.list("start.drop-announce")) {
+            announce(world, line);
+        }
 
         // 4. Nach der Farmzeit beginnt die Border zu schrumpfen
         int finalShrinkSeconds = shrinkSeconds;
@@ -224,12 +229,13 @@ public class VaroStartCommand implements CommandExecutor {
                 // über die angegebene Dauer, statt es sofort zu setzen.
                 border.setSize(finalTargetSize, finalShrinkSeconds);
                 game.startShrink(finalShrinkSeconds);
-                announce(world, "§c§lDie Border beginnt jetzt zu schrumpfen!");
+                nightVision.removeAll(world);
+                announce(world, Lang.get("start.shrink-announce"));
             }
         }.runTaskLater(plugin, farmMinutes * 60L * 20L);
 
-        sender.sendMessage("§aVaro gestartet mit §f" + dropped + "§a Spielern!");
-        sender.sendMessage("§7Border schrumpft in §f" + farmMinutes + "§7 Minuten.");
+        sender.sendMessage(Lang.get("start.started", dropped));
+        sender.sendMessage(Lang.get("start.shrink-in", farmMinutes));
     }
 
     /** Nachricht an alle Spieler in der Varo-Welt (statt serverweitem Broadcast). */
@@ -247,6 +253,7 @@ public class VaroStartCommand implements CommandExecutor {
         player.setFoodLevel(20);
         player.setSaturation(20f);
         player.getInventory().addItem(elevator.createItem());
+        nightVision.apply(player);
         glideManager.startGlide(player);
     }
 

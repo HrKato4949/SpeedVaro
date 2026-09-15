@@ -2,6 +2,7 @@ package de.kato.varo.commands;
 
 import de.kato.varo.ArenaState;
 import de.kato.varo.Cage;
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -50,7 +51,7 @@ public class VaroResetCommand implements CommandExecutor {
         String arenaWorld = plugin.getConfig().getString("arena-world", "varo");
         World world = Bukkit.getWorld(arenaWorld);
         if (world == null) {
-            sender.sendMessage("§cDie Welt §f'" + arenaWorld + "'§c wurde nicht gefunden.");
+            sender.sendMessage(Lang.get("general.world-missing", arenaWorld));
             return;
         }
 
@@ -71,9 +72,9 @@ public class VaroResetCommand implements CommandExecutor {
         int sentHome = sendEveryoneHome(world);
         game.reset();
 
-        sender.sendMessage("§aVaro-Welt zurückgesetzt.");
-        sender.sendMessage("§7Border auf Maximum, Weltspawn bei 0/0, Käfig entfernt.");
-        sender.sendMessage("§7Zum Spawn geschickt: §f" + sentHome + " Spieler§7.");
+        sender.sendMessage(Lang.get("reset.done"));
+        sender.sendMessage(Lang.get("reset.details"));
+        sender.sendMessage(Lang.get("reset.sent-home", sentHome));
     }
 
     /**
@@ -84,7 +85,7 @@ public class VaroResetCommand implements CommandExecutor {
      * echtes Inventar löschen.
      */
     private int sendEveryoneHome(World world) {
-        World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "spawn"));
+        World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "world"));
         if (lobby == null) {
             lobby = Bukkit.getWorlds().get(0);
         }
@@ -97,7 +98,7 @@ public class VaroResetCommand implements CommandExecutor {
             }
 
             player.teleport(lobby.getSpawnLocation());
-            player.sendMessage("§eDie Varo-Runde wurde beendet - du bist zurück am Spawn.");
+            player.sendMessage(Lang.get("reset.player-notice"));
         }
 
         return players.size();

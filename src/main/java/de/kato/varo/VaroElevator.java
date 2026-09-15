@@ -2,6 +2,7 @@ package de.kato.varo;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
@@ -17,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
 
 /**
  * Der "Höhlen-Aufzug": ein einmaliges Item, das jeder beim Drop bekommt.
@@ -41,11 +41,10 @@ public class VaroElevator implements Listener {
     public ItemStack createItem() {
         ItemStack item = new ItemStack(Material.ECHO_SHARD);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(LEGACY.deserialize("§b§lHöhlen-Aufzug").decoration(TextDecoration.ITALIC, false));
-        meta.lore(List.of(
-                LEGACY.deserialize("§7Rechtsklick unter §fY=0§7:").decoration(TextDecoration.ITALIC, false),
-                LEGACY.deserialize("§7teleportiert dich an die Oberfläche.").decoration(TextDecoration.ITALIC, false),
-                LEGACY.deserialize("§8Nur einmal verwendbar.").decoration(TextDecoration.ITALIC, false)));
+        meta.displayName(LEGACY.deserialize(Lang.get("elevator.name")).decoration(TextDecoration.ITALIC, false));
+        meta.lore(Lang.list("elevator.lore").stream()
+                .<Component>map(line -> LEGACY.deserialize(line).decoration(TextDecoration.ITALIC, false))
+                .toList());
         meta.setEnchantmentGlintOverride(true);
         meta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
@@ -73,7 +72,7 @@ public class VaroElevator implements Listener {
 
         Location from = player.getLocation();
         if (from.getBlockY() >= MAX_USE_Y) {
-            player.sendMessage("§cDer Höhlen-Aufzug funktioniert nur unterhalb von Y=0.");
+            player.sendMessage(Lang.get("elevator.too-high"));
             return;
         }
 
@@ -88,7 +87,7 @@ public class VaroElevator implements Listener {
         player.setFallDistance(0f);
         player.teleport(target);
         player.playSound(Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.PLAYER, 1f, 1.2f));
-        player.sendMessage("§bDer Höhlen-Aufzug bringt dich nach oben.");
+        player.sendMessage(Lang.get("elevator.used"));
     }
 
     private boolean isElevator(ItemStack item) {

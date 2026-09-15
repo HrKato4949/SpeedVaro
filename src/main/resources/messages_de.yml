@@ -1,0 +1,352 @@
+# SpeedVaro Texte - Deutsch. Aktivieren mit "language: de" in der config.yml.
+# Farbcodes mit &, Platzhalter {0}, {1}, ... - Reihenfolge wie in messages_en.yml.
+
+general:
+  players-only: "&cDieser Befehl kann nur von einem Spieler ausgeführt werden."
+  no-permission: "&cDazu hast du keine Rechte."
+  arena-only: "&cDas geht nur in der Varo-Welt."
+  world-missing: "&cDie Welt &f'{0}'&c wurde nicht gefunden."
+
+reload:
+  done: "&aSpeedVaro-Config und Texte neu geladen."
+  jar-hint: "&7Neue Plugin-Versionen brauchen weiterhin einen Neustart."
+  console-hint: "&cDas Menü gibt es nur im Spiel. Von der Konsole geht &f/varo reload&c."
+
+setup:
+  size-not-a-number: "&cDie Border-Größe muss eine Zahl sein."
+  arena-world-missing: "&cDie Varo-Welt &f'{0}'&c wurde nicht gefunden."
+  arena-world-hint: "&7Erstelle sie mit &f/mv create {0} NORMAL&7 oder passe &farena-world&7 in der config.yml an."
+  searching: "&eSuche einen geeigneten Ort..."
+  no-location: "&cKein geeigneter Ort gefunden. Führe den Befehl einfach nochmal aus."
+  created: "&aVaro-Arena erstellt in &f'{0}'&a!"
+  center: "&7Zentrum: &fX={0} Z={1} &8({2}. Arena)"
+  border-size: "&7Border-Größe: &f{0}"
+  lobby-open: "&7Lobby ist offen - Spieler einladen über &f/varo&7."
+
+start:
+  usage: "&cUngültige Parameter. Nutzung: /varostart [farmMinuten] [zielGröße] [schrumpfSekunden]"
+  no-arena: "&cEs wurde noch keine Arena erstellt. Führe zuerst /varosetup aus!"
+  already-running: "&cEs läuft bereits eine Runde. Nutze /varosetup für eine neue Arena."
+  no-participants: "&cKeine Teilnehmer angemeldet. Lade Spieler über &f/varo &cein."
+  countdown-running: "&cDer Countdown läuft bereits."
+  countdown-started: "&aCountdown läuft: &f{0} Sekunden&a bis zum Drop."
+  countdown-title: "&e&l{0}"
+  countdown-title-final: "&c&l{0}"
+  countdown-subtitle: "&7Drop in..."
+  go-title: "&a&lGO!"
+  go-subtitle: "&7Viel Erfolg!"
+  drop-announce:
+    - "&a&lDer Drop hat begonnen! Viel Erfolg!"
+    - "&7Farmzeit: Bäume fallen komplett, Drops landen direkt im Inventar, Erze kommen als Barren."
+    - "&7An Flüssen und Seen wächst reichlich Zuckerrohr - für Papier und Zaubertisch."
+  shrink-announce: "&c&lDie Border beginnt jetzt zu schrumpfen!"
+  started: "&aVaro gestartet mit &f{0}&a Spielern!"
+  shrink-in: "&7Border schrumpft in &f{0}&7 Minuten."
+
+join:
+  no-lobby: "&cGerade ist keine Varo-Lobby offen."
+  already: "&eDu bist bereits angemeldet."
+  not-invited: "&cDu hast keine offene Einladung."
+  joined: "&aDu bist der Varo-Runde beigetreten!"
+  leave-hint: "&7Mit &f/leave &7kommst du jederzeit zurück zum Spawn."
+  declined: "&cEinladung abgelehnt."
+  left: "&cDu hast die Varo-Runde verlassen."
+
+leave:
+  not-in-arena: "&cDu bist gerade nicht in der Varo-Welt."
+  left: "&aDu hast Varo verlassen - willkommen zurück am Spawn."
+
+reset:
+  done: "&aVaro-Welt zurückgesetzt."
+  details: "&7Border auf Maximum, Weltspawn bei 0/0, Käfig entfernt."
+  sent-home: "&7Zum Spawn geschickt: &f{0} Spieler&7."
+  player-notice: "&eDie Varo-Runde wurde beendet - du bist zurück am Spawn."
+
+safenet:
+  usage: "&cBenutzung: /varosafenet <on|off>"
+  state-on: "&7Aktuell: &aan"
+  state-off: "&7Aktuell: &caus"
+  enabled: "&aJoin-Sicherheitsnetz aktiviert."
+  disabled: "&cJoin-Sicherheitsnetz deaktiviert."
+
+protection:
+  nether-blocked: "&cDer Nether ist in Varo gesperrt."
+  command-blocked: "&cDieser Befehl ist während Varo gesperrt."
+
+phase:
+  none: "Keine Arena"
+  lobby: "Lobby"
+  farm: "Farmzeit"
+  fight: "Kampf"
+  ended: "Beendet"
+
+time:
+  unchanged: "Unverändert"
+  morning: "Morgen"
+  noon: "Mittag"
+  evening: "Abend"
+  night: "Nacht"
+
+team:
+  name: "Team {0}"
+  none: "&cDu bist in keinem Team."
+  inventory-opened: "&7Inventar von &f{0}&7 geöffnet."
+  backpack-title: "{0}&lBackpack &8» {0}{1}"
+  nametag: "{0}[{1}] "
+  lobby-only: "&cTeams können nur in der Lobby geändert werden."
+  max-reached: "&cEs gibt bereits die maximale Anzahl an Teams."
+  created: "&a{0}{1} &aerstellt - du bist beigetreten."
+  left: "&cDu hast dein Team verlassen."
+  joined: "&aDu bist {0}{1}&a beigetreten."
+
+workstation:
+  need-anvil: "&cDu brauchst einen Amboss im Inventar."
+  need-table: "&cDu brauchst einen Zaubertisch im Inventar."
+
+elevator:
+  name: "&b&lHöhlen-Aufzug"
+  lore:
+    - "&7Rechtsklick unter &fY=0&7:"
+    - "&7teleportiert dich an die Oberfläche."
+    - "&8Nur einmal verwendbar."
+  too-high: "&cDer Höhlen-Aufzug funktioniert nur unterhalb von Y=0."
+  used: "&bDer Höhlen-Aufzug bringt dich nach oben."
+
+chest:
+  no-break: "&cDie Loot-Kiste lässt sich nur öffnen, nicht abbauen."
+  hologram: "&f&l{0}'s Loot\n&e⌛ {1}s"
+  hologram-final: "&f&l{0}'s Loot\n&c⌛ {1}s"
+
+death:
+  died: "&c{0} &7ist gestorben &8(&b{1} &7Respawns übrig&8)"
+  last-heart: "&c&lLetztes Herz verbraucht - der nächste Tod ist endgültig!"
+  eliminated-short: "&c☠ {0} &7ist ausgeschieden."
+  eliminated-bossbar: "&c☠ {0} &7ist ausgeschieden &8(&f{1} &7übrig&8)"
+  eliminated-chat: "&c&l☠ {0} &cist ausgeschieden! &7Noch &f{1} &7im Spiel."
+  redrop-title: "&b&l{0}"
+  redrop-subtitle: "&7Respawn von oben..."
+
+kick:
+  you-were-removed: "&cDu wurdest aus der Varo-Runde entfernt."
+  removed: "&c{0} &7wurde aus der Runde entfernt &8({1} übrig)"
+  done: "&c{0} &7wurde aus der Runde entfernt."
+
+win:
+  nobody-left: "&cDie Runde ist vorbei - es ist niemand mehr übrig."
+  sent-home: "&7Die Runde ist vorbei - willkommen zurück am Spawn."
+  title: "&6&l{0}"
+  subtitle: "&egewinnt Varo!"
+  box-header: "   &6&l★ &e&lVARO SIEGER &6&l★"
+  box-winner: "   &f{0}{1}"
+  box-members: " &7» &f{0}"
+  box-separator: "&7, &f"
+  box-reward: "   &7Belohnung: {0}"
+
+scoreboard:
+  lives: " &7Leben &8» "
+  time: " &7Zeit &8» &f{0}"
+  border: " &7Border &8» {0}"
+  border-shrinking: "&f{0} &8→ &c{1}"
+  winner: " &7Sieger &8» &6{0}"
+  players: " &7Spieler &8» &a{0} &7/ &f{1}"
+  team: " &7Team &8» {0}{1}"
+  mate: "  {0}● &f{1} &8» {2}"
+  mate-dead: "&8tot"
+  mate-distance: "&7{0}m"
+  mate-other-world: "&8andere Welt"
+
+spectate:
+  only-spectators: "&cZuschauen geht nur als Zuschauer in der Varo-Welt."
+  gone: "&cDieser Spieler ist nicht mehr im Spiel."
+  watching: "&7Du schaust jetzt &f{0}&7 zu."
+
+invite:
+  offline: "&cDieser Spieler ist nicht mehr online."
+  sent: "&a{0} wurde eingeladen."
+  command-hint: "&7Oder tippe &f/varoaccept &7bzw. &f/varocancel&7."
+  message: "&e&lVARO &7» &fDu wurdest von &e{0}&f eingeladen! "
+  accept-button: "[Annehmen]"
+  accept-hover: "Beitreten und in die Lobby"
+  decline-button: "[Ablehnen]"
+  decline-hover: "Einladung ablehnen"
+
+gui:
+  on: "&aan"
+  off: "&caus"
+  back:
+    name: "&7Zurück"
+  main:
+    title: "&6&lVARO"
+    leave:
+      name: "&cVaro verlassen"
+      lore: ["&7Du bist angemeldet."]
+    playing:
+      name: "&aDu bist dabei"
+      lore: ["&7Die Runde läuft bereits."]
+    join:
+      name: "&aVaro beitreten"
+      lore: ["&7Du wirst direkt in die Lobby teleportiert."]
+    no-invite:
+      name: "&7Keine Einladung"
+      lore: ["&7Ein Admin muss dich einladen."]
+    status:
+      name: "&eStatus"
+      lore:
+        - "&7Phase: &f{0}"
+        - "&7Teilnehmer: &f{1}"
+        - "&7Dein Team: {2}"
+    status-no-team: "&7keins"
+    teams:
+      name: "&bTeams"
+      lore:
+        - "&7Team erstellen oder beitreten."
+        - "&7Teams: &f{0}&7/&f{1}"
+    invite:
+      name: "&aSpieler einladen"
+      lore: ["&7Schickt eine klickbare Einladung."]
+    admin:
+      name: "&cAdmin"
+      lore: ["&7Arena, Runde und Einstellungen."]
+    backpack:
+      name: "{0}Team-Backpack"
+      lore:
+        - "&7Gemeinsame Kiste für {0}{1}&7."
+        - "&8Auch per &7/backpack"
+    spectate:
+      name: "&bZuschauen"
+      lore:
+        - "&7Teleportiert dich zu einem lebenden Spieler."
+        - "&8Auch per &7/spec"
+  spectate:
+    title: "&bZuschauen"
+    no-team: "&7Kein Team"
+    entry:
+      lore:
+        - "&7Team: {0}"
+        - "&7Leben: {1}&7/&f{2}"
+        - "&eKlicken zum Teleportieren"
+  teams:
+    title: "&6Teams"
+    own:
+      name: "{0}&l{1}"
+      lore:
+        - "&7Mitglieder: &f{2}"
+        - "&aDu bist in diesem Team"
+    other:
+      name: "{0}&l{1}"
+      lore:
+        - "&7Mitglieder: &f{2}"
+        - "&eKlicken zum Beitreten"
+    create:
+      name: "&aNeues Team erstellen"
+      lore: ["&7Legt &f{0}&7 an."]
+    leave:
+      name: "&cTeam verlassen"
+      lore: ["&7Du spielst dann alleine."]
+  invite:
+    title: "&bSpieler einladen"
+    entry:
+      lore: ["&eKlicken zum Einladen"]
+    invited:
+      lore: ["&7Bereits eingeladen"]
+  admin:
+    title: "&cVaro-Admin"
+    create:
+      name: "&aArena aufbauen"
+      lore:
+        - "&7Sucht einen neuen Ort und öffnet die Lobby."
+        - "&7Border: &f{0}"
+        - "{1}"
+    create-none: "&8Noch keine Arena"
+    create-current: "&8Aktuell: {0} / {1}"
+    start:
+      name: "&6Runde starten"
+      lore:
+        - "&7Löst den Drop aus."
+        - "&7Farmzeit: &f{0} min"
+        - "&7Ziel-Border: &f{1}"
+        - "&7Schrumpfdauer: &f{2} min"
+        - "&7Countdown: &f{3} s"
+        - "&7Angemeldet: &f{4}"
+    settings:
+      name: "&eEinstellungen"
+      lore: ["&7Werte für die nächste Runde."]
+    reset:
+      name: "&cWelt zurücksetzen"
+      lore:
+        - "&7Border auf Maximum, Weltspawn sichern,"
+        - "&7Käfigreste entfernen."
+    kick:
+      name: "&cSpieler entfernen"
+      lore:
+        - "&7Wirft jemanden aus der Runde - z.B. wer"
+        - "&7offline ging und den Sieg blockiert."
+        - "&7Angemeldet: &f{0}"
+    safenet:
+      name: "&bJoin-Sicherheitsnetz {0}"
+      lore:
+        - "&7Teleportiert joinende Spieler in den Käfig,"
+        - "&7solange die Lobby steht."
+        - "&eKlicken zum Umschalten"
+  kick:
+    title: "&cSpieler entfernen"
+    online: "&aOnline"
+    offline: "&cOffline"
+    alive: "&7Noch im Spiel"
+    eliminated: "&8Bereits ausgeschieden"
+    entry:
+      lore:
+        - "{0}"
+        - "{1}"
+        - "&cKlicken zum Entfernen"
+  settings:
+    title: "&eEinstellungen"
+    lives-none: "&7keine"
+    lives:
+      name: "&aRespawns"
+      lore:
+        - "&7Aktuell: {0}"
+        - "&7Jedes Herz ist ein Respawn von oben."
+        - "&7Erst der Tod ohne Herz ist endgültig."
+        - "&8Linksklick &7+1 &8| &8Rechtsklick &7-1"
+    border:
+      name: "&aBorder-Größe"
+      lore:
+        - "&7Aktuell: &f{0}"
+        - "&8Linksklick &7+250 &8| &8Rechtsklick &7-250"
+    farm:
+      name: "&aFarmzeit"
+      lore:
+        - "&7Aktuell: &f{0} Minuten"
+        - "&8Linksklick &7+5 &8| &8Rechtsklick &7-5"
+    target:
+      name: "&aZiel-Border"
+      lore:
+        - "&7Aktuell: &f{0}"
+        - "&7Darauf schrumpft die Border."
+        - "&8Linksklick &7+100 &8| &8Rechtsklick &7-100"
+    shrink:
+      name: "&aSchrumpfdauer"
+      lore:
+        - "&7Aktuell: &f{0} Minuten"
+        - "&8Linksklick &7+5 &8| &8Rechtsklick &7-5"
+    chunks:
+      name: "&aChunk-Vorgenerierung"
+      lore:
+        - "&7Radius: &f{0} Chunks"
+        - "&7Erzeugt &f{1}&7 Chunks beim Aufbau."
+        - "&8Größer = weniger schwarzes Gelände beim Drop."
+        - "&8Linksklick &7+2 &8| &8Rechtsklick &7-2"
+    time:
+      name: "&aStartzeit"
+      lore:
+        - "&7Aktuell: &f{0}"
+        - "&7Weltzeit beim Aufbau und beim Drop."
+        - "&8Klicken zum Umschalten"
+    countdown:
+      name: "&aCountdown"
+      lore:
+        - "&7Aktuell: &f{0} Sekunden"
+        - "&7Vorlauf mit Anzeige, bevor der Käfig aufgeht."
+        - "&80 = sofort starten"
+        - "&8Linksklick &7+1 &8| &8Rechtsklick &7-1"

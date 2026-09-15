@@ -1,5 +1,6 @@
 package de.kato.varo.commands;
 
+import de.kato.varo.Lang;
 import de.kato.varo.gui.VaroGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +23,7 @@ public class VaroSpectateCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
+            sender.sendMessage(Lang.get("general.players-only"));
             return true;
         }
 

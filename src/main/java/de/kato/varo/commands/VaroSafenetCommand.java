@@ -1,5 +1,6 @@
 package de.kato.varo.commands;
 
+import de.kato.varo.Lang;
 import de.kato.varo.listeners.VaroJoinListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,16 +21,14 @@ public class VaroSafenetCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 1 || !(args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off"))) {
-            sender.sendMessage("§cBenutzung: /varosafenet <on|off>");
-            sender.sendMessage("§7Aktuell: " + (joinListener.isEnabled() ? "§aan" : "§caus"));
+            sender.sendMessage(Lang.get("safenet.usage"));
+            sender.sendMessage(Lang.get(joinListener.isEnabled() ? "safenet.state-on" : "safenet.state-off"));
             return true;
         }
 
         boolean enable = args[0].equalsIgnoreCase("on");
         joinListener.setEnabled(enable);
-        sender.sendMessage(enable
-                ? "§aJoin-Sicherheitsnetz aktiviert."
-                : "§cJoin-Sicherheitsnetz deaktiviert.");
+        sender.sendMessage(Lang.get(enable ? "safenet.enabled" : "safenet.disabled"));
         return true;
     }
 }

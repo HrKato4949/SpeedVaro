@@ -87,7 +87,7 @@ public class VaroDeathChest implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (protectedBlocks.contains(event.getBlock().getLocation())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage("§cDie Loot-Kiste lässt sich nur öffnen, nicht abbauen.");
+            event.getPlayer().sendMessage(Lang.get("chest.no-break"));
         }
     }
 
@@ -98,8 +98,8 @@ public class VaroDeathChest implements Listener {
             @Override
             public void run() {
                 if (remaining > 0) {
-                    String color = remaining <= 10 ? "§c" : "§e";
-                    display.text(LEGACY.deserialize("§f§l" + name + "'s Loot\n" + color + "⌛ " + remaining + "s"));
+                    String key = remaining <= 10 ? "chest.hologram-final" : "chest.hologram";
+                    display.text(LEGACY.deserialize(Lang.get(key, name, remaining)));
                     remaining--;
                     return;
                 }

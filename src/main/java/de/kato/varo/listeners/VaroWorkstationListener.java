@@ -1,5 +1,6 @@
 package de.kato.varo.listeners;
 
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -39,12 +40,12 @@ public class VaroWorkstationListener implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
+            sender.sendMessage(Lang.get("general.players-only"));
             return true;
         }
 
         if (!game.isInActiveArena(player)) {
-            player.sendMessage("§cDas geht nur in der Varo-Welt.");
+            player.sendMessage(Lang.get("general.arena-only"));
             return true;
         }
 
@@ -53,7 +54,7 @@ public class VaroWorkstationListener implements Listener, CommandExecutor {
             if (!inventory.contains(Material.ANVIL)
                     && !inventory.contains(Material.CHIPPED_ANVIL)
                     && !inventory.contains(Material.DAMAGED_ANVIL)) {
-                player.sendMessage("§cDu brauchst einen Amboss im Inventar.");
+                player.sendMessage(Lang.get("workstation.need-anvil"));
                 return true;
             }
             player.openAnvil(null, true);
@@ -61,7 +62,7 @@ public class VaroWorkstationListener implements Listener, CommandExecutor {
         }
 
         if (!inventory.contains(Material.ENCHANTING_TABLE)) {
-            player.sendMessage("§cDu brauchst einen Zaubertisch im Inventar.");
+            player.sendMessage(Lang.get("workstation.need-table"));
             return true;
         }
         virtualTables.add(player.getUniqueId());

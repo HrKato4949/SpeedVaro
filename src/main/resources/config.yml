@@ -1,3 +1,7 @@
+# Sprache aller Texte: "en" (Standard) oder "de". Weitere Sprachen: eigene
+# messages_<code>.yml neben die vorhandenen legen. /varo reload übernimmt.
+language: en
+
 # Name der Welt, in der Varo aufgebaut werden darf.
 # /varosetup verweigert den Aufbau in jeder anderen Welt, damit die
 # Worldborder niemals versehentlich Spawn- oder Survival-Welten trifft.
@@ -26,6 +30,14 @@ extra-diamond-veins-per-chunk: 2
 # Zuckerrohr an Ufern deutlich häufiger als in Vanilla, plus gelegentlich
 # ein kleiner Tümpel in trockenen Gegenden (für Papier/Zaubertisch).
 extra-sugar-cane: true
+
+# Keine feindlichen Mobs in der Arena-Welt (Zombies, Creeper, Phantome, ...),
+# solange eine Runde vorbereitet wird oder läuft. Ersetzt die Gamerule, die
+# man sonst pro Welt setzen müsste. Spawn-Eier und /summon gehen weiterhin,
+# Tiere sind nicht betroffen.
+block-hostile-mobs: true
+# Nachtsicht für alle Spieler vom Drop bis zum Ende der Farmzeit.
+farm-night-vision: true
 
 # Belohnungen für jeden Sieger, als Konsolenbefehle. %player% wird ersetzt.
 # Beispiele: "eco give %player% 1000" (EssentialsX), "points give %player% 50"

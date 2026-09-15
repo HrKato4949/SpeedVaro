@@ -1,6 +1,7 @@
 package de.kato.varo.commands;
 
 import de.kato.varo.ArenaState;
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -30,17 +31,17 @@ public class VaroLeaveCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
+            sender.sendMessage(Lang.get("general.players-only"));
             return true;
         }
 
         ArenaState arena = game.getArena();
         if (arena == null || !player.getWorld().getName().equals(arena.worldName)) {
-            player.sendMessage("§cDu bist gerade nicht in der Varo-Welt.");
+            player.sendMessage(Lang.get("leave.not-in-arena"));
             return true;
         }
 
-        String lobbyName = plugin.getConfig().getString("lobby-world", "spawn");
+        String lobbyName = plugin.getConfig().getString("lobby-world", "world");
         World lobby = Bukkit.getWorld(lobbyName);
         if (lobby == null) {
             // Fallback auf die Hauptwelt, falls der Name in der config nicht stimmt.
@@ -55,7 +56,7 @@ public class VaroLeaveCommand implements CommandExecutor {
         }
 
         player.teleport(lobby.getSpawnLocation());
-        player.sendMessage("§aDu hast Varo verlassen - willkommen zurück am Spawn.");
+        player.sendMessage(Lang.get("leave.left"));
         return true;
     }
 }

@@ -1,0 +1,354 @@
+# SpeedVaro messages - English (default).
+# Colour codes use &, placeholders are {0}, {1}, ... in the order noted.
+# Copy this file to messages_<code>.yml for another language and set
+# "language: <code>" in config.yml. Missing keys fall back to English.
+
+general:
+  players-only: "&cThis command can only be used by a player."
+  no-permission: "&cYou don't have permission to do that."
+  arena-only: "&cThat only works in the Varo world."
+  world-missing: "&cThe world &f'{0}'&c was not found."   # {0} world name
+
+reload:
+  done: "&aSpeedVaro config and messages reloaded."
+  jar-hint: "&7New plugin versions still require a restart."
+  console-hint: "&cThe menu is only available in-game. From the console use &f/varo reload&c."
+
+setup:
+  size-not-a-number: "&cThe border size must be a number."
+  arena-world-missing: "&cThe Varo world &f'{0}'&c was not found."
+  arena-world-hint: "&7Create it with &f/mv create {0} NORMAL&7 or change &farena-world&7 in config.yml."
+  searching: "&eSearching for a suitable location..."
+  no-location: "&cNo suitable location found. Just run the command again."
+  created: "&aVaro arena created in &f'{0}'&a!"                     # {0} world
+  center: "&7Centre: &fX={0} Z={1} &8(arena #{2})"                  # {0} x, {1} z, {2} arena count
+  border-size: "&7Border size: &f{0}"
+  lobby-open: "&7The lobby is open - invite players via &f/varo&7."
+
+start:
+  usage: "&cInvalid parameters. Usage: /varostart [farmMinutes] [targetSize] [shrinkSeconds]"
+  no-arena: "&cNo arena has been built yet. Run /varosetup first!"
+  already-running: "&cA round is already running. Use /varosetup for a new arena."
+  no-participants: "&cNo participants registered. Invite players via &f/varo&c."
+  countdown-running: "&cThe countdown is already running."
+  countdown-started: "&aCountdown running: &f{0} seconds&a until the drop."
+  countdown-title: "&e&l{0}"
+  countdown-title-final: "&c&l{0}"
+  countdown-subtitle: "&7Drop in..."
+  go-title: "&a&lGO!"
+  go-subtitle: "&7Good luck!"
+  drop-announce:
+    - "&a&lThe drop has begun! Good luck!"
+    - "&7Farm time: trees fall whole, drops go straight into your inventory, ores drop as ingots."
+    - "&7Sugar cane grows plentifully along rivers and lakes - for paper and enchanting."
+  shrink-announce: "&c&lThe border is now shrinking!"
+  started: "&aVaro started with &f{0}&a players!"
+  shrink-in: "&7The border starts shrinking in &f{0}&7 minutes."
+
+join:
+  no-lobby: "&cThere is no open Varo lobby right now."
+  already: "&eYou are already registered."
+  not-invited: "&cYou have no open invitation."
+  joined: "&aYou joined the Varo round!"
+  leave-hint: "&7Use &f/leave &7at any time to return to spawn."
+  declined: "&cInvitation declined."
+  left: "&cYou left the Varo round."
+
+leave:
+  not-in-arena: "&cYou are not in the Varo world."
+  left: "&aYou left Varo - welcome back at spawn."
+
+reset:
+  done: "&aVaro world reset."
+  details: "&7Border set to maximum, world spawn at 0/0, cage removed."
+  sent-home: "&7Sent to spawn: &f{0} players&7."
+  player-notice: "&eThe Varo round has ended - you are back at spawn."
+
+safenet:
+  usage: "&cUsage: /varosafenet <on|off>"
+  state-on: "&7Currently: &aon"
+  state-off: "&7Currently: &coff"
+  enabled: "&aJoin safety net enabled."
+  disabled: "&cJoin safety net disabled."
+
+protection:
+  nether-blocked: "&cThe Nether is disabled in Varo."
+  command-blocked: "&cThis command is blocked during Varo."
+
+phase:
+  none: "No arena"
+  lobby: "Lobby"
+  farm: "Farm time"
+  fight: "Fight"
+  ended: "Finished"
+
+time:
+  unchanged: "Unchanged"
+  morning: "Morning"
+  noon: "Noon"
+  evening: "Evening"
+  night: "Night"
+
+team:
+  name: "Team {0}"                                   # {0} number
+  none: "&cYou are not in a team."
+  inventory-opened: "&7Opened the inventory of &f{0}&7."
+  backpack-title: "{0}&lBackpack &8» {0}{1}"        # {0} colour code, {1} team name
+  nametag: "{0}[{1}] "                               # prefix above the head
+  lobby-only: "&cTeams can only be changed in the lobby."
+  max-reached: "&cThe maximum number of teams already exists."
+  created: "&a{0}{1} &acreated - you joined it."
+  left: "&cYou left your team."
+  joined: "&aYou joined {0}{1}&a."
+
+workstation:
+  need-anvil: "&cYou need an anvil in your inventory."
+  need-table: "&cYou need an enchanting table in your inventory."
+
+elevator:
+  name: "&b&lCave Elevator"
+  lore:
+    - "&7Right-click below &fY=0&7:"
+    - "&7teleports you to the surface."
+    - "&8Single use."
+  too-high: "&cThe cave elevator only works below Y=0."
+  used: "&bThe cave elevator takes you up."
+
+chest:
+  no-break: "&cThe loot chest can only be opened, not broken."
+  hologram: "&f&l{0}'s loot\n&e⌛ {1}s"              # {0} player, {1} seconds
+  hologram-final: "&f&l{0}'s loot\n&c⌛ {1}s"
+
+death:
+  died: "&c{0} &7died &8(&b{1} &7respawns left&8)"
+  last-heart: "&c&lLast heart used - your next death is final!"
+  eliminated-short: "&c☠ {0} &7has been eliminated."
+  eliminated-bossbar: "&c☠ {0} &7has been eliminated &8(&f{1} &7left&8)"
+  eliminated-chat: "&c&l☠ {0} &chas been eliminated! &7{1} &7still in the game."
+  redrop-title: "&b&l{0}"
+  redrop-subtitle: "&7Respawning from above..."
+
+kick:
+  you-were-removed: "&cYou were removed from the Varo round."
+  removed: "&c{0} &7was removed from the round &8({1} left)"
+  done: "&c{0} &7was removed from the round."
+
+win:
+  nobody-left: "&cThe round is over - nobody is left."
+  sent-home: "&7The round is over - welcome back at spawn."
+  title: "&6&l{0}"
+  subtitle: "&ewins Varo!"
+  box-header: "   &6&l★ &e&lVARO WINNER &6&l★"
+  box-winner: "   &f{0}{1}"                          # {0} winner name, {1} member list (may be empty)
+  box-members: " &7» &f{0}"
+  box-separator: "&7, &f"
+  box-reward: "   &7Reward: {0}"
+
+scoreboard:
+  lives: " &7Lives &8» "
+  time: " &7Time &8» &f{0}"
+  border: " &7Border &8» {0}"
+  border-shrinking: "&f{0} &8→ &c{1}"
+  winner: " &7Winner &8» &6{0}"
+  players: " &7Players &8» &a{0} &7/ &f{1}"           # {0} alive, {1} total
+  team: " &7Team &8» {0}{1}"
+  mate: "  {0}● &f{1} &8» {2}"                       # {0} colour, {1} name, {2} status
+  mate-dead: "&8dead"
+  mate-distance: "&7{0}m"
+  mate-other-world: "&8other world"
+
+spectate:
+  only-spectators: "&cSpectating is only available as a spectator in the Varo world."
+  gone: "&cThat player is no longer in the game."
+  watching: "&7You are now watching &f{0}&7."
+
+invite:
+  offline: "&cThat player is no longer online."
+  sent: "&a{0} has been invited."
+  command-hint: "&7Or type &f/varoaccept &7or &f/varocancel&7."
+  message: "&e&lVARO &7» &fYou were invited by &e{0}&f! "
+  accept-button: "[Accept]"
+  accept-hover: "Join and enter the lobby"
+  decline-button: "[Decline]"
+  decline-hover: "Decline the invitation"
+
+gui:
+  on: "&aon"
+  off: "&coff"
+  back:
+    name: "&7Back"
+  main:
+    title: "&6&lVARO"
+    leave:
+      name: "&cLeave Varo"
+      lore: ["&7You are registered."]
+    playing:
+      name: "&aYou're in"
+      lore: ["&7The round is already running."]
+    join:
+      name: "&aJoin Varo"
+      lore: ["&7You will be teleported straight into the lobby."]
+    no-invite:
+      name: "&7No invitation"
+      lore: ["&7An admin has to invite you."]
+    status:
+      name: "&eStatus"
+      lore:
+        - "&7Phase: &f{0}"
+        - "&7Participants: &f{1}"
+        - "&7Your team: {2}"
+    status-no-team: "&7none"
+    teams:
+      name: "&bTeams"
+      lore:
+        - "&7Create or join a team."
+        - "&7Teams: &f{0}&7/&f{1}"
+    invite:
+      name: "&aInvite players"
+      lore: ["&7Sends a clickable invitation."]
+    admin:
+      name: "&cAdmin"
+      lore: ["&7Arena, round and settings."]
+    backpack:
+      name: "{0}Team backpack"
+      lore:
+        - "&7Shared chest of {0}{1}&7."
+        - "&8Also via &7/backpack"
+    spectate:
+      name: "&bSpectate"
+      lore:
+        - "&7Teleports you to a living player."
+        - "&8Also via &7/spec"
+  spectate:
+    title: "&bSpectate"
+    no-team: "&7No team"
+    entry:
+      lore:
+        - "&7Team: {0}"
+        - "&7Lives: {1}&7/&f{2}"
+        - "&eClick to teleport"
+  teams:
+    title: "&6Teams"
+    own:
+      name: "{0}&l{1}"
+      lore:
+        - "&7Members: &f{2}"
+        - "&aYou are in this team"
+    other:
+      name: "{0}&l{1}"
+      lore:
+        - "&7Members: &f{2}"
+        - "&eClick to join"
+    create:
+      name: "&aCreate new team"
+      lore: ["&7Creates &f{0}&7."]
+    leave:
+      name: "&cLeave team"
+      lore: ["&7You will play solo."]
+  invite:
+    title: "&bInvite players"
+    entry:
+      lore: ["&eClick to invite"]
+    invited:
+      lore: ["&7Already invited"]
+  admin:
+    title: "&cVaro Admin"
+    create:
+      name: "&aBuild arena"
+      lore:
+        - "&7Finds a new location and opens the lobby."
+        - "&7Border: &f{0}"
+        - "{1}"
+    create-none: "&8No arena yet"
+    create-current: "&8Current: {0} / {1}"
+    start:
+      name: "&6Start round"
+      lore:
+        - "&7Triggers the drop."
+        - "&7Farm time: &f{0} min"
+        - "&7Target border: &f{1}"
+        - "&7Shrink time: &f{2} min"
+        - "&7Countdown: &f{3} s"
+        - "&7Registered: &f{4}"
+    settings:
+      name: "&eSettings"
+      lore: ["&7Values for the next round."]
+    reset:
+      name: "&cReset world"
+      lore:
+        - "&7Border to maximum, safe world spawn,"
+        - "&7remove cage remains."
+    kick:
+      name: "&cRemove player"
+      lore:
+        - "&7Removes someone from the round - e.g."
+        - "&7players who went offline and block the win."
+        - "&7Registered: &f{0}"
+    safenet:
+      name: "&bJoin safety net {0}"
+      lore:
+        - "&7Teleports joining players into the cage"
+        - "&7while the lobby is open."
+        - "&eClick to toggle"
+  kick:
+    title: "&cRemove player"
+    online: "&aOnline"
+    offline: "&cOffline"
+    alive: "&7Still in the game"
+    eliminated: "&8Already eliminated"
+    entry:
+      lore:
+        - "{0}"
+        - "{1}"
+        - "&cClick to remove"
+  settings:
+    title: "&eSettings"
+    lives-none: "&7none"
+    lives:
+      name: "&aRespawns"
+      lore:
+        - "&7Current: {0}"
+        - "&7Every heart is one respawn from above."
+        - "&7Only a death without a heart is final."
+        - "&8Left click &7+1 &8| &8Right click &7-1"
+    border:
+      name: "&aBorder size"
+      lore:
+        - "&7Current: &f{0}"
+        - "&8Left click &7+250 &8| &8Right click &7-250"
+    farm:
+      name: "&aFarm time"
+      lore:
+        - "&7Current: &f{0} minutes"
+        - "&8Left click &7+5 &8| &8Right click &7-5"
+    target:
+      name: "&aTarget border"
+      lore:
+        - "&7Current: &f{0}"
+        - "&7The border shrinks down to this size."
+        - "&8Left click &7+100 &8| &8Right click &7-100"
+    shrink:
+      name: "&aShrink time"
+      lore:
+        - "&7Current: &f{0} minutes"
+        - "&8Left click &7+5 &8| &8Right click &7-5"
+    chunks:
+      name: "&aChunk pre-generation"
+      lore:
+        - "&7Radius: &f{0} chunks"
+        - "&7Generates &f{1}&7 chunks when building."
+        - "&8Larger = less unloaded terrain at the drop."
+        - "&8Left click &7+2 &8| &8Right click &7-2"
+    time:
+      name: "&aStart time"
+      lore:
+        - "&7Current: &f{0}"
+        - "&7World time when building and at the drop."
+        - "&8Click to cycle"
+    countdown:
+      name: "&aCountdown"
+      lore:
+        - "&7Current: &f{0} seconds"
+        - "&7Lead time with a display before the cage opens."
+        - "&80 = start immediately"
+        - "&8Left click &7+1 &8| &8Right click &7-1"

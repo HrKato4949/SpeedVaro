@@ -11,7 +11,7 @@ public class VaroSettings {
 
     /** -1 bedeutet: Weltzeit nicht anfassen. */
     private static final long[] TIME_PRESETS = {-1, 1000, 6000, 12000, 18000};
-    private static final String[] TIME_NAMES = {"Unverändert", "Morgen", "Mittag", "Abend", "Nacht"};
+    private static final String[] TIME_KEYS = {"time.unchanged", "time.morning", "time.noon", "time.evening", "time.night"};
 
     private final JavaPlugin plugin;
 
@@ -96,7 +96,7 @@ public class VaroSettings {
         long current = getStartTime();
         for (int i = 0; i < TIME_PRESETS.length; i++) {
             if (TIME_PRESETS[i] == current) {
-                return TIME_NAMES[i];
+                return Lang.get(TIME_KEYS[i]);
             }
         }
         return String.valueOf(current);

@@ -1,5 +1,6 @@
 package de.kato.varo.commands;
 
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -25,7 +26,7 @@ public class VaroAcceptCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
+            sender.sendMessage(Lang.get("general.players-only"));
             return true;
         }
 
@@ -37,18 +38,18 @@ public class VaroAcceptCommand implements CommandExecutor {
         UUID uuid = player.getUniqueId();
 
         if (game.getPhase() != VaroGame.Phase.LOBBY) {
-            player.sendMessage("§cGerade ist keine Varo-Lobby offen.");
+            player.sendMessage(Lang.get("join.no-lobby"));
             return;
         }
 
         if (game.isParticipant(uuid)) {
-            player.sendMessage("§eDu bist bereits angemeldet.");
+            player.sendMessage(Lang.get("join.already"));
             return;
         }
 
         // Admins dürfen ohne Einladung rein - praktisch zum Testen.
         if (!game.isInvited(uuid) && !player.hasPermission("varo.admin")) {
-            player.sendMessage("§cDu hast keine offene Einladung.");
+            player.sendMessage(Lang.get("join.not-invited"));
             return;
         }
 
@@ -59,7 +60,7 @@ public class VaroAcceptCommand implements CommandExecutor {
             player.teleport(cage);
         }
 
-        player.sendMessage("§aDu bist der Varo-Runde beigetreten!");
-        player.sendMessage("§7Mit §f/leave §7kommst du jederzeit zurück zum Spawn.");
+        player.sendMessage(Lang.get("join.joined"));
+        player.sendMessage(Lang.get("join.leave-hint"));
     }
 }

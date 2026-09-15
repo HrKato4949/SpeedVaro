@@ -91,8 +91,8 @@ public class VaroInventoryListener implements Listener {
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().warning("Konnte Inventar von " + player.getName()
-                    + " nicht sichern: " + e.getMessage());
+            plugin.getLogger().warning("Could not back up the inventory of " + player.getName()
+                    + ": " + e.getMessage());
             // Ohne Backup wird garantiert nichts geleert.
             return;
         }
@@ -126,7 +126,7 @@ public class VaroInventoryListener implements Listener {
         player.setExp((float) config.getDouble("exp"));
 
         if (!file.delete()) {
-            plugin.getLogger().warning("Konnte " + file.getName() + " nicht löschen.");
+            plugin.getLogger().warning("Could not delete " + file.getName() + ".");
         }
     }
 

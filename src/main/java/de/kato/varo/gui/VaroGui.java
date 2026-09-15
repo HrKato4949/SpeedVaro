@@ -1,6 +1,7 @@
 package de.kato.varo.gui;
 
 import de.kato.varo.ArenaState;
+import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
 import de.kato.varo.VaroSettings;
 import de.kato.varo.VaroTeam;
@@ -39,6 +40,9 @@ import java.util.UUID;
  * Das komplette Varo-Menü hinter /varo: Beitreten/Verlassen, Teams, und für
  * Admins Arena aufbauen, Runde starten, Einstellungen und Zurücksetzen -
  * damit im Betrieb kein einziger Befehl mehr nötig ist.
+ *
+ * Alle Texte kommen aus den Sprachdateien: Ein Menüpunkt "gui.x" hat dort
+ * "gui.x.name" und die Liste "gui.x.lore".
  */
 public class VaroGui implements Listener {
 
@@ -78,8 +82,9 @@ public class VaroGui implements Listener {
     private static final int SLOT_SET_TIME = 25;
     private static final int SLOT_SET_BACK = 31;
 
-    /** Letzte Reihe der Einladen-Liste bleibt frei. */
-    private static final int INVITE_CAPACITY = 45;
+    /** Letzte Reihe der Kopf-Listen bleibt frei (Platz für den Zurück-Button). */
+    private static final int LIST_CAPACITY = 45;
+    private static final int SLOT_LIST_BACK = LIST_CAPACITY + 4;
 
     private final JavaPlugin plugin;
     private final VaroGame game;
@@ -112,53 +117,45 @@ public class VaroGui implements Listener {
     // ------------------------------------------------------------------ Menüs
 
     public void openMain(Player player) {
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.MAIN, 27, "§6§lVARO");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.MAIN, 27, "gui.main.title");
 
         UUID uuid = player.getUniqueId();
         boolean lobby = game.getPhase() == VaroGame.Phase.LOBBY;
 
         if (game.isParticipant(uuid)) {
             menu.setItem(SLOT_JOIN, lobby
-                    ? item(Material.BARRIER, "§cVaro verlassen", "§7Du bist angemeldet.")
-                    : item(Material.LIME_DYE, "§aDu bist dabei", "§7Die Runde läuft bereits."));
+                    ? item(Material.BARRIER, "gui.main.leave")
+                    : item(Material.LIME_DYE, "gui.main.playing"));
         } else if (lobby && mayJoin(player)) {
-            menu.setItem(SLOT_JOIN, item(Material.LIME_DYE, "§aVaro beitreten",
-                    "§7Du wirst direkt in die Lobby teleportiert."));
+            menu.setItem(SLOT_JOIN, item(Material.LIME_DYE, "gui.main.join"));
         } else {
-            menu.setItem(SLOT_JOIN, item(Material.GRAY_DYE, "§7Keine Einladung",
-                    "§7Ein Admin muss dich einladen."));
+            menu.setItem(SLOT_JOIN, item(Material.GRAY_DYE, "gui.main.no-invite"));
         }
 
         VaroTeam ownTeam = game.getTeam(uuid);
-        menu.setItem(SLOT_INFO, item(Material.BOOK, "§eStatus",
-                "§7Phase: §f" + phaseName(),
-                "§7Teilnehmer: §f" + game.getParticipants().size(),
-                "§7Dein Team: " + (ownTeam == null ? "§7keins" : ownTeam.getLegacyColor() + ownTeam.getName())));
+        menu.setItem(SLOT_INFO, item(Material.BOOK, "gui.main.status",
+                phaseName(),
+                game.getParticipants().size(),
+                ownTeam == null ? Lang.get("gui.main.status-no-team") : ownTeam.getLegacyColor() + ownTeam.getName()));
 
-        menu.setItem(SLOT_TEAMS, item(Material.WHITE_BANNER, "§bTeams",
-                "§7Team erstellen oder beitreten.",
-                "§7Teams: §f" + game.getTeams().size() + "§7/§f" + VaroTeam.MAX_TEAMS));
+        menu.setItem(SLOT_TEAMS, item(Material.WHITE_BANNER, "gui.main.teams",
+                game.getTeams().size(), VaroTeam.MAX_TEAMS));
 
         if (player.hasPermission("varo.invite")) {
-            menu.setItem(SLOT_INVITE, item(Material.PLAYER_HEAD, "§aSpieler einladen",
-                    "§7Holt Spieler direkt in die Lobby."));
+            menu.setItem(SLOT_INVITE, item(Material.PLAYER_HEAD, "gui.main.invite"));
         }
 
         if (player.hasPermission("varo.admin")) {
-            menu.setItem(SLOT_ADMIN, item(Material.COMPARATOR, "§cAdmin",
-                    "§7Arena, Runde und Einstellungen."));
+            menu.setItem(SLOT_ADMIN, item(Material.COMPARATOR, "gui.main.admin"));
         }
 
         if (ownTeam != null && game.isInActiveArena(player)) {
-            menu.setItem(SLOT_BACKPACK, item(Material.CHEST, ownTeam.getLegacyColor() + "Team-Backpack",
-                    "§7Gemeinsame Kiste für " + ownTeam.getLegacyColor() + ownTeam.getName() + "§7.",
-                    "§8Auch per §7/backpack"));
+            menu.setItem(SLOT_BACKPACK, item(Material.CHEST, "gui.main.backpack",
+                    ownTeam.getLegacyColor(), ownTeam.getName()));
         }
 
         if (maySpectate(player)) {
-            menu.setItem(SLOT_SPECTATE, item(Material.COMPASS, "§bZuschauen",
-                    "§7Teleportiert dich zu einem lebenden Spieler.",
-                    "§8Auch per §7/spec"));
+            menu.setItem(SLOT_SPECTATE, item(Material.COMPASS, "gui.main.spectate"));
         }
 
         player.openInventory(menu);
@@ -166,180 +163,135 @@ public class VaroGui implements Listener {
 
     public void openSpectate(Player spectator) {
         if (!maySpectate(spectator)) {
-            spectator.sendMessage("§cZuschauen geht nur als Zuschauer in der Varo-Welt.");
+            spectator.sendMessage(Lang.get("spectate.only-spectators"));
             return;
         }
 
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.SPECTATE, 54, "§bZuschauen");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.SPECTATE, 54, "gui.spectate.title");
 
         int slot = 0;
         for (UUID uuid : game.getAlive()) {
             Player target = Bukkit.getPlayer(uuid);
-            if (target == null || slot >= INVITE_CAPACITY) {
+            if (target == null || slot >= LIST_CAPACITY) {
                 continue;
             }
 
             VaroTeam team = game.getTeam(uuid);
-            menu.setItem(slot++, head(target,
-                    team == null ? "§7Kein Team" : "§7Team: " + team.getLegacyColor() + team.getName(),
-                    "§7Leben: " + game.getLives(uuid) + "§7/§f" + game.getMaxLives(),
-                    "§eKlicken zum Teleportieren"));
+            menu.setItem(slot++, head(target, "gui.spectate.entry",
+                    team == null ? Lang.get("gui.spectate.no-team") : team.getLegacyColor() + team.getName(),
+                    game.getLives(uuid), game.getMaxLives()));
         }
 
         spectator.openInventory(menu);
     }
 
     public void openTeams(Player player) {
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.TEAMS, 27, "§6Teams");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.TEAMS, 27, "gui.teams.title");
 
         VaroTeam ownTeam = game.getTeam(player.getUniqueId());
         List<VaroTeam> teams = game.getTeams();
 
         for (int i = 0; i < teams.size(); i++) {
             VaroTeam team = teams.get(i);
-            menu.setItem(i, item(team.getWool(), team.getLegacyColor() + "§l" + team.getName(),
-                    "§7Mitglieder: §f" + team.getMembers().size(),
-                    team == ownTeam ? "§aDu bist in diesem Team" : "§eKlicken zum Beitreten"));
+            menu.setItem(i, item(team.getWool(), team == ownTeam ? "gui.teams.own" : "gui.teams.other",
+                    team.getLegacyColor(), team.getName(), team.getMembers().size()));
         }
 
         if (teams.size() < VaroTeam.MAX_TEAMS) {
-            menu.setItem(SLOT_TEAM_CREATE, item(Material.NETHER_STAR, "§aNeues Team erstellen",
-                    "§7Legt §fTeam " + (teams.size() + 1) + "§7 an."));
+            menu.setItem(SLOT_TEAM_CREATE, item(Material.NETHER_STAR, "gui.teams.create",
+                    Lang.get("team.name", teams.size() + 1)));
         }
 
         if (ownTeam != null) {
-            menu.setItem(SLOT_TEAM_LEAVE, item(Material.BARRIER, "§cTeam verlassen",
-                    "§7Du spielst dann alleine."));
+            menu.setItem(SLOT_TEAM_LEAVE, item(Material.BARRIER, "gui.teams.leave"));
         }
 
-        menu.setItem(SLOT_TEAM_BACK, item(Material.ARROW, "§7Zurück"));
+        menu.setItem(SLOT_TEAM_BACK, item(Material.ARROW, "gui.back"));
         player.openInventory(menu);
     }
 
     public void openInvite(Player admin) {
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.INVITE, 54, "§bSpieler einladen");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.INVITE, 54, "gui.invite.title");
 
         int slot = 0;
         for (Player online : Bukkit.getOnlinePlayers()) {
-            if (slot >= INVITE_CAPACITY) {
+            if (slot >= LIST_CAPACITY) {
                 break;
             }
             if (game.isParticipant(online.getUniqueId())) {
                 continue;
             }
-            menu.setItem(slot++, head(online, game.isInvited(online.getUniqueId())
-                    ? "§7Bereits eingeladen"
-                    : "§eKlicken zum Einladen"));
+            menu.setItem(slot++, head(online,
+                    game.isInvited(online.getUniqueId()) ? "gui.invite.invited" : "gui.invite.entry"));
         }
 
         admin.openInventory(menu);
     }
 
     public void openAdmin(Player admin) {
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.ADMIN, 27, "§cVaro-Admin");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.ADMIN, 27, "gui.admin.title");
 
         ArenaState arena = game.getArena();
-        menu.setItem(SLOT_ADMIN_CREATE, item(Material.EMERALD_BLOCK, "§aArena aufbauen",
-                "§7Sucht einen neuen Ort und öffnet die Lobby.",
-                "§7Border: §f" + settings.getBorderSize(),
-                arena == null ? "§8Noch keine Arena" : "§8Aktuell: " + arena.centerX + " / " + arena.centerZ));
+        menu.setItem(SLOT_ADMIN_CREATE, item(Material.EMERALD_BLOCK, "gui.admin.create",
+                settings.getBorderSize(),
+                arena == null
+                        ? Lang.get("gui.admin.create-none")
+                        : Lang.get("gui.admin.create-current", arena.centerX, arena.centerZ)));
 
-        menu.setItem(SLOT_ADMIN_START, item(Material.FIREWORK_ROCKET, "§6Runde starten",
-                "§7Löst den Drop aus.",
-                "§7Farmzeit: §f" + settings.getFarmMinutes() + " min",
-                "§7Ziel-Border: §f" + settings.getTargetSize(),
-                "§7Schrumpfdauer: §f" + settings.getShrinkMinutes() + " min",
-                "§7Countdown: §f" + settings.getCountdownSeconds() + " s",
-                "§7Angemeldet: §f" + game.getParticipants().size()));
+        menu.setItem(SLOT_ADMIN_START, item(Material.FIREWORK_ROCKET, "gui.admin.start",
+                settings.getFarmMinutes(), settings.getTargetSize(), settings.getShrinkMinutes(),
+                settings.getCountdownSeconds(), game.getParticipants().size()));
 
-        menu.setItem(SLOT_ADMIN_SETTINGS, item(Material.REPEATER, "§eEinstellungen",
-                "§7Werte für die nächste Runde."));
+        menu.setItem(SLOT_ADMIN_SETTINGS, item(Material.REPEATER, "gui.admin.settings"));
+        menu.setItem(SLOT_ADMIN_RESET, item(Material.TNT, "gui.admin.reset"));
+        menu.setItem(SLOT_ADMIN_KICK, item(Material.IRON_DOOR, "gui.admin.kick", game.getParticipants().size()));
 
-        menu.setItem(SLOT_ADMIN_RESET, item(Material.TNT, "§cWelt zurücksetzen",
-                "§7Border auf Maximum, Weltspawn sichern,",
-                "§7Käfigreste entfernen."));
+        boolean safenet = joinListener.isEnabled();
+        menu.setItem(SLOT_ADMIN_SAFENET, item(safenet ? Material.SHIELD : Material.GRAY_DYE,
+                "gui.admin.safenet", Lang.get(safenet ? "gui.on" : "gui.off")));
 
-        menu.setItem(SLOT_ADMIN_KICK, item(Material.IRON_DOOR, "§cSpieler entfernen",
-                "§7Wirft jemanden aus der Runde - z.B. wer",
-                "§7offline ging und den Sieg blockiert.",
-                "§7Angemeldet: §f" + game.getParticipants().size()));
-
-        menu.setItem(SLOT_ADMIN_SAFENET, item(
-                joinListener.isEnabled() ? Material.SHIELD : Material.GRAY_DYE,
-                "§bJoin-Sicherheitsnetz " + (joinListener.isEnabled() ? "§aan" : "§caus"),
-                "§7Teleportiert joinende Spieler in den Käfig,",
-                "§7solange die Lobby steht.",
-                "§eKlicken zum Umschalten"));
-
-        menu.setItem(SLOT_ADMIN_BACK, item(Material.ARROW, "§7Zurück"));
+        menu.setItem(SLOT_ADMIN_BACK, item(Material.ARROW, "gui.back"));
         admin.openInventory(menu);
     }
 
     public void openKick(Player admin) {
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.KICK, 54, "§cSpieler entfernen");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.KICK, 54, "gui.kick.title");
 
         int slot = 0;
         for (UUID uuid : game.getParticipants()) {
-            if (slot >= INVITE_CAPACITY) {
+            if (slot >= LIST_CAPACITY) {
                 break;
             }
 
             OfflinePlayer participant = Bukkit.getOfflinePlayer(uuid);
             boolean alive = game.getPhase() == VaroGame.Phase.LOBBY || game.isAlive(uuid);
-            menu.setItem(slot++, head(participant,
-                    participant.isOnline() ? "§aOnline" : "§cOffline",
-                    alive ? "§7Noch im Spiel" : "§8Bereits ausgeschieden",
-                    "§cKlicken zum Entfernen"));
+            menu.setItem(slot++, head(participant, "gui.kick.entry",
+                    Lang.get(participant.isOnline() ? "gui.kick.online" : "gui.kick.offline"),
+                    Lang.get(alive ? "gui.kick.alive" : "gui.kick.eliminated")));
         }
 
-        menu.setItem(INVITE_CAPACITY + 4, item(Material.ARROW, "§7Zurück"));
+        menu.setItem(SLOT_LIST_BACK, item(Material.ARROW, "gui.back"));
         admin.openInventory(menu);
     }
 
     public void openSettings(Player admin) {
-        Inventory menu = createMenu(VaroMenuHolder.MenuType.SETTINGS, 36, "§eEinstellungen");
+        Inventory menu = createMenu(VaroMenuHolder.MenuType.SETTINGS, 36, "gui.settings.title");
 
-        menu.setItem(SLOT_SET_LIVES, item(Material.TOTEM_OF_UNDYING, "§aRespawns",
-                "§7Aktuell: " + (settings.getLives() == 0 ? "§7keine" : "§b" + "❤".repeat(settings.getLives())),
-                "§7Jedes Herz ist ein Respawn von oben.",
-                "§7Erst der Tod ohne Herz ist endgültig.",
-                "§8Linksklick §7+1 §8| §8Rechtsklick §7-1"));
+        String hearts = settings.getLives() == 0
+                ? Lang.get("gui.settings.lives-none")
+                : "§b" + "❤".repeat(settings.getLives());
 
-        menu.setItem(SLOT_SET_BORDER, item(Material.MAP, "§aBorder-Größe",
-                "§7Aktuell: §f" + settings.getBorderSize(),
-                "§8Linksklick §7+250 §8| §8Rechtsklick §7-250"));
+        menu.setItem(SLOT_SET_LIVES, item(Material.TOTEM_OF_UNDYING, "gui.settings.lives", hearts));
+        menu.setItem(SLOT_SET_BORDER, item(Material.MAP, "gui.settings.border", settings.getBorderSize()));
+        menu.setItem(SLOT_SET_FARM, item(Material.CLOCK, "gui.settings.farm", settings.getFarmMinutes()));
+        menu.setItem(SLOT_SET_TARGET, item(Material.TARGET, "gui.settings.target", settings.getTargetSize()));
+        menu.setItem(SLOT_SET_SHRINK, item(Material.PISTON, "gui.settings.shrink", settings.getShrinkMinutes()));
+        menu.setItem(SLOT_SET_CHUNKS, item(Material.GRASS_BLOCK, "gui.settings.chunks",
+                settings.getPreloadRadius(), settings.getPreloadChunkCount()));
+        menu.setItem(SLOT_SET_TIME, item(Material.DAYLIGHT_DETECTOR, "gui.settings.time", settings.getStartTimeName()));
+        menu.setItem(SLOT_SET_COUNTDOWN, item(Material.BELL, "gui.settings.countdown", settings.getCountdownSeconds()));
 
-        menu.setItem(SLOT_SET_FARM, item(Material.CLOCK, "§aFarmzeit",
-                "§7Aktuell: §f" + settings.getFarmMinutes() + " Minuten",
-                "§8Linksklick §7+5 §8| §8Rechtsklick §7-5"));
-
-        menu.setItem(SLOT_SET_TARGET, item(Material.TARGET, "§aZiel-Border",
-                "§7Aktuell: §f" + settings.getTargetSize(),
-                "§7Darauf schrumpft die Border.",
-                "§8Linksklick §7+100 §8| §8Rechtsklick §7-100"));
-
-        menu.setItem(SLOT_SET_SHRINK, item(Material.PISTON, "§aSchrumpfdauer",
-                "§7Aktuell: §f" + settings.getShrinkMinutes() + " Minuten",
-                "§8Linksklick §7+5 §8| §8Rechtsklick §7-5"));
-
-        menu.setItem(SLOT_SET_CHUNKS, item(Material.GRASS_BLOCK, "§aChunk-Vorgenerierung",
-                "§7Radius: §f" + settings.getPreloadRadius() + " Chunks",
-                "§7Erzeugt §f" + settings.getPreloadChunkCount() + "§7 Chunks beim Aufbau.",
-                "§8Größer = weniger schwarzes Gelände beim Drop.",
-                "§8Linksklick §7+2 §8| §8Rechtsklick §7-2"));
-
-        menu.setItem(SLOT_SET_TIME, item(Material.DAYLIGHT_DETECTOR, "§aStartzeit",
-                "§7Aktuell: §f" + settings.getStartTimeName(),
-                "§7Weltzeit beim Aufbau und beim Drop.",
-                "§8Klicken zum Umschalten"));
-
-        menu.setItem(SLOT_SET_COUNTDOWN, item(Material.BELL, "§aCountdown",
-                "§7Aktuell: §f" + settings.getCountdownSeconds() + " Sekunden",
-                "§7Vorlauf mit Anzeige, bevor der Käfig aufgeht.",
-                "§80 = sofort starten",
-                "§8Linksklick §7+1 §8| §8Rechtsklick §7-1"));
-
-        menu.setItem(SLOT_SET_BACK, item(Material.ARROW, "§7Zurück"));
+        menu.setItem(SLOT_SET_BACK, item(Material.ARROW, "gui.back"));
         admin.openInventory(menu);
     }
 
@@ -379,14 +331,14 @@ public class VaroGui implements Listener {
         OfflinePlayer owner = skull.getOwningPlayer();
         Player target = owner == null ? null : owner.getPlayer();
         if (target == null || !game.isAlive(target.getUniqueId())) {
-            spectator.sendMessage("§cDieser Spieler ist nicht mehr im Spiel.");
+            spectator.sendMessage(Lang.get("spectate.gone"));
             openSpectate(spectator);
             return;
         }
 
         spectator.closeInventory();
         spectator.teleport(target.getLocation());
-        spectator.sendMessage("§7Du schaust jetzt §f" + target.getName() + "§7 zu.");
+        spectator.sendMessage(Lang.get("spectate.watching", target.getName()));
     }
 
     private void handleKickClick(Player admin, int slot, ItemStack clicked) {
@@ -394,7 +346,7 @@ public class VaroGui implements Listener {
             return;
         }
 
-        if (slot == INVITE_CAPACITY + 4) {
+        if (slot == SLOT_LIST_BACK) {
             openAdmin(admin);
             return;
         }
@@ -410,7 +362,7 @@ public class VaroGui implements Listener {
         }
 
         deathListener.kick(target.getUniqueId());
-        admin.sendMessage("§c" + target.getName() + " §7wurde aus der Runde entfernt.");
+        admin.sendMessage(Lang.get("kick.done", target.getName()));
         openKick(admin);
     }
 
@@ -452,7 +404,7 @@ public class VaroGui implements Listener {
         if (game.isParticipant(uuid)) {
             game.removeParticipant(uuid);
             sendToLobbyWorld(player);
-            player.sendMessage("§cDu hast die Varo-Runde verlassen.");
+            player.sendMessage(Lang.get("join.left"));
         } else if (mayJoin(player)) {
             acceptCommand.accept(player);
         } else {
@@ -471,7 +423,7 @@ public class VaroGui implements Listener {
         // Teams lassen sich nur in der Lobby umbauen - mitten in der Runde
         // würde ein Wechsel die Sieg-Erkennung durcheinanderbringen.
         if (game.getPhase() != VaroGame.Phase.LOBBY) {
-            player.sendMessage("§cTeams können nur in der Lobby geändert werden.");
+            player.sendMessage(Lang.get("team.lobby-only"));
             return;
         }
 
@@ -480,18 +432,18 @@ public class VaroGui implements Listener {
         if (slot == SLOT_TEAM_CREATE) {
             VaroTeam created = game.createTeam();
             if (created == null) {
-                player.sendMessage("§cEs gibt bereits die maximale Anzahl an Teams.");
+                player.sendMessage(Lang.get("team.max-reached"));
                 return;
             }
             game.joinTeam(uuid, created);
-            player.sendMessage("§a" + created.getLegacyColor() + created.getName() + " §aerstellt - du bist beigetreten.");
+            player.sendMessage(Lang.get("team.created", created.getLegacyColor(), created.getName()));
             openTeams(player);
             return;
         }
 
         if (slot == SLOT_TEAM_LEAVE) {
             game.leaveTeam(uuid);
-            player.sendMessage("§cDu hast dein Team verlassen.");
+            player.sendMessage(Lang.get("team.left"));
             openTeams(player);
             return;
         }
@@ -500,7 +452,7 @@ public class VaroGui implements Listener {
         if (slot >= 0 && slot < teams.size()) {
             VaroTeam team = teams.get(slot);
             game.joinTeam(uuid, team);
-            player.sendMessage("§aDu bist " + team.getLegacyColor() + team.getName() + "§a beigetreten.");
+            player.sendMessage(Lang.get("team.joined", team.getLegacyColor(), team.getName()));
             openTeams(player);
         }
     }
@@ -572,14 +524,14 @@ public class VaroGui implements Listener {
         OfflinePlayer owner = skull.getOwningPlayer();
         Player target = owner == null ? null : owner.getPlayer();
         if (target == null) {
-            admin.sendMessage("§cDieser Spieler ist nicht mehr online.");
+            admin.sendMessage(Lang.get("invite.offline"));
             return;
         }
 
         game.invite(target.getUniqueId());
-        admin.sendMessage("§a" + target.getName() + " wurde eingeladen.");
+        admin.sendMessage(Lang.get("invite.sent", target.getName()));
         target.sendMessage(invitation(admin));
-        target.sendMessage("§7Oder tippe §f/varoaccept §7bzw. §f/varocancel§7.");
+        target.sendMessage(Lang.get("invite.command-hint"));
 
         // Liste neu aufbauen, damit die Einladung sofort sichtbar ist.
         openInvite(admin);
@@ -590,14 +542,14 @@ public class VaroGui implements Listener {
     /** Einladung mit klickbaren [Annehmen]/[Ablehnen]-Buttons, die die Befehle auslösen. */
     private Component invitation(Player inviter) {
         return Component.text()
-                .append(LEGACY.deserialize("§e§lVARO §7» §fDu wurdest von §e" + inviter.getName() + "§f eingeladen! "))
-                .append(Component.text("[Annehmen]", NamedTextColor.GREEN, TextDecoration.BOLD)
+                .append(LEGACY.deserialize(Lang.get("invite.message", inviter.getName())))
+                .append(Component.text(Lang.get("invite.accept-button"), NamedTextColor.GREEN, TextDecoration.BOLD)
                         .clickEvent(ClickEvent.runCommand("/varoaccept"))
-                        .hoverEvent(Component.text("Beitreten und in die Lobby", NamedTextColor.GRAY)))
+                        .hoverEvent(Component.text(Lang.get("invite.accept-hover"), NamedTextColor.GRAY)))
                 .append(Component.text(" "))
-                .append(Component.text("[Ablehnen]", NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(Lang.get("invite.decline-button"), NamedTextColor.RED, TextDecoration.BOLD)
                         .clickEvent(ClickEvent.runCommand("/varocancel"))
-                        .hoverEvent(Component.text("Einladung ablehnen", NamedTextColor.GRAY)))
+                        .hoverEvent(Component.text(Lang.get("invite.decline-hover"), NamedTextColor.GRAY)))
                 .build();
     }
 
@@ -607,7 +559,7 @@ public class VaroGui implements Listener {
             return;
         }
 
-        World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "spawn"));
+        World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "world"));
         if (lobby == null) {
             lobby = Bukkit.getWorlds().get(0);
         }
@@ -621,17 +573,17 @@ public class VaroGui implements Listener {
 
     private String phaseName() {
         return switch (game.getPhase()) {
-            case IDLE -> "Keine Arena";
-            case LOBBY -> "Lobby";
-            case FARM -> "Farmzeit";
-            case SHRINK -> "Kampf";
-            case ENDED -> "Beendet";
+            case IDLE -> Lang.get("phase.none");
+            case LOBBY -> Lang.get("phase.lobby");
+            case FARM -> Lang.get("phase.farm");
+            case SHRINK -> Lang.get("phase.fight");
+            case ENDED -> Lang.get("phase.ended");
         };
     }
 
-    private Inventory createMenu(VaroMenuHolder.MenuType type, int size, String title) {
+    private Inventory createMenu(VaroMenuHolder.MenuType type, int size, String titleKey) {
         VaroMenuHolder holder = new VaroMenuHolder(type);
-        Inventory menu = Bukkit.createInventory(holder, size, text(title));
+        Inventory menu = Bukkit.createInventory(holder, size, text(Lang.get(titleKey)));
         holder.setInventory(menu);
         return menu;
     }
@@ -641,37 +593,38 @@ public class VaroGui implements Listener {
         return player.getGameMode() == GameMode.SPECTATOR && game.isInActiveArena(player);
     }
 
-    private ItemStack head(OfflinePlayer target, String... lore) {
+    /** Spielerkopf; die Lore kommt aus "<key>.lore", der Name ist der Spielername. */
+    private ItemStack head(OfflinePlayer target, String key, Object... args) {
         ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) stack.getItemMeta();
         meta.setOwningPlayer(target);
         meta.displayName(text("§f" + (target.getName() == null ? "?" : target.getName())));
-
-        List<Component> lines = new ArrayList<>(lore.length);
-        for (String line : lore) {
-            lines.add(text(line));
-        }
-        meta.lore(lines);
-
+        meta.lore(lore(key, args));
         stack.setItemMeta(meta);
         return stack;
     }
 
-    private ItemStack item(Material material, String name, String... lore) {
+    /** Menüpunkt mit Name aus "<key>.name" und Lore aus "<key>.lore". */
+    private ItemStack item(Material material, String key, Object... args) {
         ItemStack stack = new ItemStack(material);
         ItemMeta meta = stack.getItemMeta();
-        meta.displayName(text(name));
+        meta.displayName(text(Lang.get(key + ".name", args)));
 
-        if (lore.length > 0) {
-            List<Component> lines = new ArrayList<>(lore.length);
-            for (String line : lore) {
-                lines.add(text(line));
-            }
+        List<Component> lines = lore(key, args);
+        if (!lines.isEmpty()) {
             meta.lore(lines);
         }
 
         stack.setItemMeta(meta);
         return stack;
+    }
+
+    private List<Component> lore(String key, Object... args) {
+        List<Component> lines = new ArrayList<>();
+        for (String line : Lang.list(key + ".lore", args)) {
+            lines.add(text(line));
+        }
+        return lines;
     }
 
     /** Wandelt einen §-Text in eine Component ohne das Standard-Kursiv um. */

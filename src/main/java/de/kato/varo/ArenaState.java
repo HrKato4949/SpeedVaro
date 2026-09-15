@@ -67,7 +67,7 @@ public class ArenaState {
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().warning("Konnte arena.yml nicht speichern: " + e.getMessage());
+            plugin.getLogger().warning("Could not save arena.yml: " + e.getMessage());
         }
     }
 }

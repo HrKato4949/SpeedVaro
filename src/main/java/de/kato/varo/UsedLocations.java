@@ -82,7 +82,7 @@ public class UsedLocations {
         try {
             config.save(new File(folder, FILE_NAME));
         } catch (IOException e) {
-            plugin.getLogger().warning("Konnte " + FILE_NAME + " nicht speichern: " + e.getMessage());
+            plugin.getLogger().warning("Could not save " + FILE_NAME + ": " + e.getMessage());
         }
     }
 }

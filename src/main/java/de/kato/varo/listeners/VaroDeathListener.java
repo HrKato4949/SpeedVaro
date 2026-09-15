@@ -1,10 +1,12 @@
 package de.kato.varo.listeners;
 
 import de.kato.varo.ArenaState;
+import de.kato.varo.Lang;
 import de.kato.varo.VaroCelebration;
 import de.kato.varo.VaroDeathChest;
 import de.kato.varo.VaroGame;
 import de.kato.varo.VaroGlideManager;
+import de.kato.varo.VaroNightVision;
 import de.kato.varo.VaroTeam;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
@@ -58,17 +60,20 @@ public class VaroDeathListener implements Listener {
     private final VaroGlideManager glideManager;
     private final VaroCelebration celebration;
     private final VaroDeathChest deathChest;
+    private final VaroNightVision nightVision;
 
     /** In der Arena gestorben - der Respawn gehört hoch über das Zentrum. */
     private final Set<UUID> pendingRespawn = new HashSet<>();
 
     public VaroDeathListener(JavaPlugin plugin, VaroGame game, VaroGlideManager glideManager,
-                             VaroCelebration celebration, VaroDeathChest deathChest) {
+                             VaroCelebration celebration, VaroDeathChest deathChest,
+                             VaroNightVision nightVision) {
         this.plugin = plugin;
         this.game = game;
         this.glideManager = glideManager;
         this.celebration = celebration;
         this.deathChest = deathChest;
+        this.nightVision = nightVision;
     }
 
     @EventHandler
@@ -95,9 +100,9 @@ public class VaroDeathListener implements Listener {
             event.setKeepLevel(true);
             event.setDroppedExp(0);
 
-            announce("§c" + player.getName() + " §7ist gestorben §8(§b" + livesLeft + " §7Respawns übrig§8)");
+            announce(Lang.get("death.died", player.getName(), livesLeft));
             if (livesLeft == 0) {
-                player.sendMessage("§c§lLetztes Herz verbraucht - der nächste Tod ist endgültig!");
+                player.sendMessage(Lang.get("death.last-heart"));
             }
         } else {
             game.eliminate(uuid);
@@ -128,7 +133,7 @@ public class VaroDeathListener implements Listener {
             // Beendet dieser Tod die Runde, übernimmt die Siegesfeier - Sound
             // und Bossbar des Ausscheidens würden sonst mit ihr kollidieren.
             if (checkWinner()) {
-                announce("§c☠ " + player.getName() + " §7ist ausgeschieden.");
+                announce(Lang.get("death.eliminated-short", player.getName()));
             } else {
                 eliminated(player.getName());
             }
@@ -195,18 +200,18 @@ public class VaroDeathListener implements Listener {
 
         if (online != null) {
             game.removeParticipant(uuid);
-            World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "spawn"));
+            World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "world"));
             if (lobby == null) {
                 lobby = Bukkit.getWorlds().get(0);
             }
             online.setGameMode(GameMode.SURVIVAL);
             online.teleport(lobby.getSpawnLocation());
-            online.sendMessage("§cDu wurdest aus der Varo-Runde entfernt.");
+            online.sendMessage(Lang.get("kick.you-were-removed"));
         } else {
             game.eliminate(uuid);
         }
 
-        announce("§c" + name + " §7wurde aus der Runde entfernt §8(" + game.getAlive().size() + " übrig)");
+        announce(Lang.get("kick.removed", name, game.getAlive().size()));
         if (isRunning()) {
             checkWinner();
         }
@@ -220,7 +225,7 @@ public class VaroDeathListener implements Listener {
     private void eliminated(String name) {
         int remaining = game.getAlive().size();
         BossBar bar = BossBar.bossBar(
-                LEGACY.deserialize("§c☠ " + name + " §7ist ausgeschieden §8(§f" + remaining + " §7übrig§8)"),
+                LEGACY.deserialize(Lang.get("death.eliminated-bossbar", name, remaining)),
                 1f, BossBar.Color.RED, BossBar.Overlay.PROGRESS);
         Sound doom = Sound.sound(Key.key("entity.wither.spawn"), Sound.Source.MASTER, 0.8f, 1f);
 
@@ -240,7 +245,7 @@ public class VaroDeathListener implements Listener {
         }, BOSSBAR_TICKS);
 
         announce(SEPARATOR);
-        announce("§c§l☠ " + name + " §cist ausgeschieden! §7Noch §f" + remaining + " §7im Spiel.");
+        announce(Lang.get("death.eliminated-chat", name, remaining));
         announce(SEPARATOR);
     }
 
@@ -287,8 +292,8 @@ public class VaroDeathListener implements Listener {
                         return;
                     }
                     player.showTitle(Title.title(
-                            LEGACY.deserialize("§b§l" + remaining),
-                            LEGACY.deserialize("§7Respawn von oben..."),
+                            LEGACY.deserialize(Lang.get("death.redrop-title", remaining)),
+                            LEGACY.deserialize(Lang.get("death.redrop-subtitle")),
                             Title.Times.times(Duration.ZERO, Duration.ofMillis(900), Duration.ofMillis(100))));
                 }
                 ticks++;
@@ -306,6 +311,11 @@ public class VaroDeathListener implements Listener {
         player.setFallDistance(0f);
         player.setFoodLevel(20);
         player.setSaturation(20f);
+        // Der Tod hat alle Effekte gelöscht - in der Farmzeit gibt es die
+        // Nachtsicht deshalb noch einmal.
+        if (game.getPhase() == VaroGame.Phase.FARM) {
+            nightVision.apply(player);
+        }
         glideManager.startGlide(player);
     }
 
@@ -327,7 +337,7 @@ public class VaroDeathListener implements Listener {
 
         if (parties.isEmpty()) {
             game.end(null);
-            announce("§cDie Runde ist vorbei - es ist niemand mehr übrig.");
+            announce(Lang.get("win.nobody-left"));
             return true;
         }
 

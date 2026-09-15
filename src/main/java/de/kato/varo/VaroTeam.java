@@ -55,7 +55,7 @@ public class VaroTeam {
         if (backpack == null) {
             backpack = Bukkit.createInventory(null, BACKPACK_SIZE,
                     LegacyComponentSerializer.legacySection()
-                            .deserialize(getLegacyColor() + "§lBackpack §8» " + getLegacyColor() + getName()));
+                            .deserialize(Lang.get("team.backpack-title", getLegacyColor(), getName())));
         }
         return backpack;
     }
@@ -75,7 +75,7 @@ public class VaroTeam {
     }
 
     public String getName() {
-        return "Team " + (index + 1);
+        return Lang.get("team.name", index + 1);
     }
 
     public NamedTextColor getColor() {

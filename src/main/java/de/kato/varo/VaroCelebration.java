@@ -83,7 +83,7 @@ public class VaroCelebration {
      * tauscht der VaroInventoryListener beim Weltwechsel automatisch zurück.
      */
     private void sendParticipantsHome() {
-        World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "spawn"));
+        World lobby = Bukkit.getWorld(plugin.getConfig().getString("lobby-world", "world"));
         if (lobby == null) {
             lobby = Bukkit.getWorlds().get(0);
         }
@@ -98,14 +98,14 @@ public class VaroCelebration {
                 player.setGameMode(GameMode.SURVIVAL);
             }
             player.teleport(lobby.getSpawnLocation());
-            player.sendMessage("§7Die Runde ist vorbei - willkommen zurück am Spawn.");
+            player.sendMessage(Lang.get("win.sent-home"));
         }
     }
 
     private void showTitle(String winnerName) {
         Title title = Title.title(
-                LEGACY.deserialize("§6§l" + winnerName),
-                LEGACY.deserialize("§egewinnt Varo!"),
+                LEGACY.deserialize(Lang.get("win.title", winnerName)),
+                LEGACY.deserialize(Lang.get("win.subtitle")),
                 Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(4), Duration.ofSeconds(1)));
         Sound fanfare = Sound.sound(Key.key("ui.toast.challenge_complete"), Sound.Source.MASTER, 1f, 1f);
 
@@ -122,10 +122,11 @@ public class VaroCelebration {
         lines.add("");
         lines.add(LINE);
         lines.add("");
-        lines.add("   §6§l★ §e§lVARO SIEGER §6§l★");
-        lines.add("   §f" + winnerName + (names.isEmpty() ? "" : " §7» §f" + String.join("§7, §f", names)));
+        lines.add(Lang.get("win.box-header"));
+        lines.add(Lang.get("win.box-winner", winnerName,
+                names.isEmpty() ? "" : Lang.get("win.box-members", String.join(Lang.get("win.box-separator"), names))));
         if (!rewardText.isEmpty()) {
-            lines.add("   §7Belohnung: " + rewardText);
+            lines.add(Lang.get("win.box-reward", rewardText));
         }
         lines.add("");
         lines.add(LINE);

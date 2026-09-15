@@ -1,4 +1,5 @@
-![SpeedVaro_Banner](https://cdn.modrinth.com/data/qxPeA7DR/images/73b5e351487e55a786fc7cad2c7d08f905e0e32e.png)
+
+<img width="1919" height="768" alt="speedVaro_banner" src="https://github.com/user-attachments/assets/5dfa228f-ef10-4fee-9ed2-281c5764e282" />
 
 # SpeedVaro – Hero Island Drop
 
@@ -31,6 +32,7 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 * **Better World Generation:** Extra diamond veins and much more sugar cane along shores in newly generated arena chunks (both configurable).
 * **Safe Inventories:** Normal player inventories and XP are safely stored on disk when entering the arena world and fully restored upon leaving. Arena loot never leaves the arena.
 * **Winner Celebration:** Title and fanfare, server-wide announcement, fireworks in team colour, configurable reward commands for every winner, and everyone returns to spawn after 10 seconds.
+* **Update Notice:** Checks Modrinth once at startup and tells the console and admins when a newer version exists. Nothing is downloaded; `update-check: false` turns it off.
 * **Locked Down:** Command blocking (shops, teleports, `/home`, `/back`), disabled Nether portals, and an invitation system with clickable **[Accept] / [Decline]** chat buttons.
 * **Multilingual:** English and German out of the box; every message is editable and additional languages are a single YAML file away.
 
@@ -107,6 +109,7 @@ extra-sugar-cane: true
 
 block-hostile-mobs: true   # no natural hostile spawns in the arena world (spawn eggs and /summon still work)
 farm-night-vision: true    # night vision from the drop until the fight starts
+update-check: true         # notify console and admins about new versions on Modrinth
 
 win-rewards:               # console commands per winner, %player% is replaced
   - "eco give %player% 1000"
@@ -152,5 +155,13 @@ No gamerules or other world settings are needed – mob spawning and night visio
 2. Create the arena world, e.g. `/mv create varo NORMAL`.
 3. Set `lobby-world` in the config to your hub/spawn world (and `language` if you want German).
 4. Optional: for a fully pre-generated arena, run Chunky on the coordinates printed by `/varosetup`.
+
+---
+
+## About this project
+
+SpeedVaro was developed with AI assistance (Claude). The concept, gameplay rules, balancing, testing and every design decision are by the author; the code and this page were written together with an AI coding assistant. Screenshots are real in-game captures.
+
+Source code and issue tracker: [github.com/HrKato4949/SpeedVaro](https://github.com/HrKato4949/SpeedVaro) · License: GPL-3.0
 
 Source code and issue tracker: [github.com/HrKato4949/SpeedVaro](https://github.com/HrKato4949/SpeedVaro) · License: GPL-3.0

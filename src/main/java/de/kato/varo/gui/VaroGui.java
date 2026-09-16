@@ -3,6 +3,7 @@ package de.kato.varo.gui;
 import de.kato.varo.ArenaState;
 import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
+import de.kato.varo.VaroResourcePack;
 import de.kato.varo.VaroSettings;
 import de.kato.varo.VaroTeam;
 import de.kato.varo.commands.VaroAcceptCommand;
@@ -34,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -86,8 +88,44 @@ public class VaroGui implements Listener {
     private static final int LIST_CAPACITY = 45;
     private static final int SLOT_LIST_BACK = LIST_CAPACITY + 4;
 
+    /**
+     * custom_model_data pro Menüpunkt für das Resourcepack. Die Nummern müssen
+     * mit resourcepack/build.py übereinstimmen - dort hängt an jeder Nummer
+     * eine Textur.
+     */
+    private static final Map<String, Integer> ICONS = Map.ofEntries(
+            Map.entry("gui.back", 1),
+            Map.entry("gui.main.leave", 2),
+            Map.entry("gui.teams.leave", 2),
+            Map.entry("gui.main.join", 3),
+            Map.entry("gui.main.playing", 4),
+            Map.entry("gui.main.no-invite", 5),
+            Map.entry("gui.main.status", 6),
+            Map.entry("gui.main.teams", 7),
+            Map.entry("gui.main.invite", 8),
+            Map.entry("gui.main.admin", 9),
+            Map.entry("gui.main.backpack", 10),
+            Map.entry("gui.main.spectate", 11),
+            Map.entry("gui.teams.create", 12),
+            Map.entry("gui.admin.create", 13),
+            Map.entry("gui.admin.start", 14),
+            Map.entry("gui.admin.settings", 15),
+            Map.entry("gui.admin.reset", 16),
+            Map.entry("gui.admin.kick", 17),
+            Map.entry("gui.settings.border", 18),
+            Map.entry("gui.settings.farm", 19),
+            Map.entry("gui.settings.target", 20),
+            Map.entry("gui.settings.shrink", 21),
+            Map.entry("gui.settings.lives", 22),
+            Map.entry("gui.settings.countdown", 23),
+            Map.entry("gui.settings.chunks", 24),
+            Map.entry("gui.settings.time", 25));
+    /** Dezente Kachel für leere Slots - nur mit Pack, sonst bleiben sie frei. */
+    private static final int FILLER_ICON = 26;
+
     private final JavaPlugin plugin;
     private final VaroGame game;
+    private final VaroResourcePack pack;
     private final VaroSettings settings;
     private final VaroSetupCommand setupCommand;
     private final VaroStartCommand startCommand;
@@ -101,9 +139,10 @@ public class VaroGui implements Listener {
                    VaroSetupCommand setupCommand, VaroStartCommand startCommand,
                    VaroResetCommand resetCommand, VaroBackpackCommand backpackCommand,
                    VaroAcceptCommand acceptCommand, VaroJoinListener joinListener,
-                   VaroDeathListener deathListener) {
+                   VaroDeathListener deathListener, VaroResourcePack pack) {
         this.plugin = plugin;
         this.game = game;
+        this.pack = pack;
         this.settings = settings;
         this.setupCommand = setupCommand;
         this.startCommand = startCommand;
@@ -124,41 +163,41 @@ public class VaroGui implements Listener {
 
         if (game.isParticipant(uuid)) {
             menu.setItem(SLOT_JOIN, lobby
-                    ? item(Material.BARRIER, "gui.main.leave")
-                    : item(Material.LIME_DYE, "gui.main.playing"));
+                    ? item(player, Material.BARRIER, "gui.main.leave")
+                    : item(player, Material.LIME_DYE, "gui.main.playing"));
         } else if (lobby && mayJoin(player)) {
-            menu.setItem(SLOT_JOIN, item(Material.LIME_DYE, "gui.main.join"));
+            menu.setItem(SLOT_JOIN, item(player, Material.LIME_DYE, "gui.main.join"));
         } else {
-            menu.setItem(SLOT_JOIN, item(Material.GRAY_DYE, "gui.main.no-invite"));
+            menu.setItem(SLOT_JOIN, item(player, Material.GRAY_DYE, "gui.main.no-invite"));
         }
 
         VaroTeam ownTeam = game.getTeam(uuid);
-        menu.setItem(SLOT_INFO, item(Material.BOOK, "gui.main.status",
+        menu.setItem(SLOT_INFO, item(player, Material.BOOK, "gui.main.status",
                 phaseName(),
                 game.getParticipants().size(),
                 ownTeam == null ? Lang.get("gui.main.status-no-team") : ownTeam.getLegacyColor() + ownTeam.getName()));
 
-        menu.setItem(SLOT_TEAMS, item(Material.WHITE_BANNER, "gui.main.teams",
+        menu.setItem(SLOT_TEAMS, item(player, Material.WHITE_BANNER, "gui.main.teams",
                 game.getTeams().size(), VaroTeam.MAX_TEAMS));
 
         if (player.hasPermission("varo.invite")) {
-            menu.setItem(SLOT_INVITE, item(Material.PLAYER_HEAD, "gui.main.invite"));
+            menu.setItem(SLOT_INVITE, item(player, Material.PLAYER_HEAD, "gui.main.invite"));
         }
 
         if (player.hasPermission("varo.admin")) {
-            menu.setItem(SLOT_ADMIN, item(Material.COMPARATOR, "gui.main.admin"));
+            menu.setItem(SLOT_ADMIN, item(player, Material.COMPARATOR, "gui.main.admin"));
         }
 
         if (ownTeam != null && game.isInActiveArena(player)) {
-            menu.setItem(SLOT_BACKPACK, item(Material.CHEST, "gui.main.backpack",
+            menu.setItem(SLOT_BACKPACK, item(player, Material.CHEST, "gui.main.backpack",
                     ownTeam.getLegacyColor(), ownTeam.getName()));
         }
 
         if (maySpectate(player)) {
-            menu.setItem(SLOT_SPECTATE, item(Material.COMPASS, "gui.main.spectate"));
+            menu.setItem(SLOT_SPECTATE, item(player, Material.COMPASS, "gui.main.spectate"));
         }
 
-        player.openInventory(menu);
+        show(player, menu);
     }
 
     public void openSpectate(Player spectator) {
@@ -182,7 +221,7 @@ public class VaroGui implements Listener {
                     game.getLives(uuid), game.getMaxLives()));
         }
 
-        spectator.openInventory(menu);
+        show(spectator, menu);
     }
 
     public void openTeams(Player player) {
@@ -193,21 +232,21 @@ public class VaroGui implements Listener {
 
         for (int i = 0; i < teams.size(); i++) {
             VaroTeam team = teams.get(i);
-            menu.setItem(i, item(team.getWool(), team == ownTeam ? "gui.teams.own" : "gui.teams.other",
+            menu.setItem(i, item(player, team.getWool(), team == ownTeam ? "gui.teams.own" : "gui.teams.other",
                     team.getLegacyColor(), team.getName(), team.getMembers().size()));
         }
 
         if (teams.size() < VaroTeam.MAX_TEAMS) {
-            menu.setItem(SLOT_TEAM_CREATE, item(Material.NETHER_STAR, "gui.teams.create",
+            menu.setItem(SLOT_TEAM_CREATE, item(player, Material.NETHER_STAR, "gui.teams.create",
                     Lang.get("team.name", teams.size() + 1)));
         }
 
         if (ownTeam != null) {
-            menu.setItem(SLOT_TEAM_LEAVE, item(Material.BARRIER, "gui.teams.leave"));
+            menu.setItem(SLOT_TEAM_LEAVE, item(player, Material.BARRIER, "gui.teams.leave"));
         }
 
-        menu.setItem(SLOT_TEAM_BACK, item(Material.ARROW, "gui.back"));
-        player.openInventory(menu);
+        menu.setItem(SLOT_TEAM_BACK, item(player, Material.ARROW, "gui.back"));
+        show(player, menu);
     }
 
     public void openInvite(Player admin) {
@@ -225,33 +264,33 @@ public class VaroGui implements Listener {
                     game.isInvited(online.getUniqueId()) ? "gui.invite.invited" : "gui.invite.entry"));
         }
 
-        admin.openInventory(menu);
+        show(admin, menu);
     }
 
     public void openAdmin(Player admin) {
         Inventory menu = createMenu(VaroMenuHolder.MenuType.ADMIN, 27, "gui.admin.title");
 
         ArenaState arena = game.getArena();
-        menu.setItem(SLOT_ADMIN_CREATE, item(Material.EMERALD_BLOCK, "gui.admin.create",
+        menu.setItem(SLOT_ADMIN_CREATE, item(admin, Material.EMERALD_BLOCK, "gui.admin.create",
                 settings.getBorderSize(),
                 arena == null
                         ? Lang.get("gui.admin.create-none")
                         : Lang.get("gui.admin.create-current", arena.centerX, arena.centerZ)));
 
-        menu.setItem(SLOT_ADMIN_START, item(Material.FIREWORK_ROCKET, "gui.admin.start",
+        menu.setItem(SLOT_ADMIN_START, item(admin, Material.FIREWORK_ROCKET, "gui.admin.start",
                 settings.getFarmMinutes(), settings.getTargetSize(), settings.getShrinkMinutes(),
                 settings.getCountdownSeconds(), game.getParticipants().size()));
 
-        menu.setItem(SLOT_ADMIN_SETTINGS, item(Material.REPEATER, "gui.admin.settings"));
-        menu.setItem(SLOT_ADMIN_RESET, item(Material.TNT, "gui.admin.reset"));
-        menu.setItem(SLOT_ADMIN_KICK, item(Material.IRON_DOOR, "gui.admin.kick", game.getParticipants().size()));
+        menu.setItem(SLOT_ADMIN_SETTINGS, item(admin, Material.REPEATER, "gui.admin.settings"));
+        menu.setItem(SLOT_ADMIN_RESET, item(admin, Material.TNT, "gui.admin.reset"));
+        menu.setItem(SLOT_ADMIN_KICK, item(admin, Material.IRON_DOOR, "gui.admin.kick", game.getParticipants().size()));
 
         boolean safenet = joinListener.isEnabled();
-        menu.setItem(SLOT_ADMIN_SAFENET, item(safenet ? Material.SHIELD : Material.GRAY_DYE,
+        menu.setItem(SLOT_ADMIN_SAFENET, item(admin, safenet ? Material.SHIELD : Material.GRAY_DYE,
                 "gui.admin.safenet", Lang.get(safenet ? "gui.on" : "gui.off")));
 
-        menu.setItem(SLOT_ADMIN_BACK, item(Material.ARROW, "gui.back"));
-        admin.openInventory(menu);
+        menu.setItem(SLOT_ADMIN_BACK, item(admin, Material.ARROW, "gui.back"));
+        show(admin, menu);
     }
 
     public void openKick(Player admin) {
@@ -270,8 +309,8 @@ public class VaroGui implements Listener {
                     Lang.get(alive ? "gui.kick.alive" : "gui.kick.eliminated")));
         }
 
-        menu.setItem(SLOT_LIST_BACK, item(Material.ARROW, "gui.back"));
-        admin.openInventory(menu);
+        menu.setItem(SLOT_LIST_BACK, item(admin, Material.ARROW, "gui.back"));
+        show(admin, menu);
     }
 
     public void openSettings(Player admin) {
@@ -281,18 +320,18 @@ public class VaroGui implements Listener {
                 ? Lang.get("gui.settings.lives-none")
                 : "§b" + "❤".repeat(settings.getLives());
 
-        menu.setItem(SLOT_SET_LIVES, item(Material.TOTEM_OF_UNDYING, "gui.settings.lives", hearts));
-        menu.setItem(SLOT_SET_BORDER, item(Material.MAP, "gui.settings.border", settings.getBorderSize()));
-        menu.setItem(SLOT_SET_FARM, item(Material.CLOCK, "gui.settings.farm", settings.getFarmMinutes()));
-        menu.setItem(SLOT_SET_TARGET, item(Material.TARGET, "gui.settings.target", settings.getTargetSize()));
-        menu.setItem(SLOT_SET_SHRINK, item(Material.PISTON, "gui.settings.shrink", settings.getShrinkMinutes()));
-        menu.setItem(SLOT_SET_CHUNKS, item(Material.GRASS_BLOCK, "gui.settings.chunks",
+        menu.setItem(SLOT_SET_LIVES, item(admin, Material.TOTEM_OF_UNDYING, "gui.settings.lives", hearts));
+        menu.setItem(SLOT_SET_BORDER, item(admin, Material.MAP, "gui.settings.border", settings.getBorderSize()));
+        menu.setItem(SLOT_SET_FARM, item(admin, Material.CLOCK, "gui.settings.farm", settings.getFarmMinutes()));
+        menu.setItem(SLOT_SET_TARGET, item(admin, Material.TARGET, "gui.settings.target", settings.getTargetSize()));
+        menu.setItem(SLOT_SET_SHRINK, item(admin, Material.PISTON, "gui.settings.shrink", settings.getShrinkMinutes()));
+        menu.setItem(SLOT_SET_CHUNKS, item(admin, Material.GRASS_BLOCK, "gui.settings.chunks",
                 settings.getPreloadRadius(), settings.getPreloadChunkCount()));
-        menu.setItem(SLOT_SET_TIME, item(Material.DAYLIGHT_DETECTOR, "gui.settings.time", settings.getStartTimeName()));
-        menu.setItem(SLOT_SET_COUNTDOWN, item(Material.BELL, "gui.settings.countdown", settings.getCountdownSeconds()));
+        menu.setItem(SLOT_SET_TIME, item(admin, Material.DAYLIGHT_DETECTOR, "gui.settings.time", settings.getStartTimeName()));
+        menu.setItem(SLOT_SET_COUNTDOWN, item(admin, Material.BELL, "gui.settings.countdown", settings.getCountdownSeconds()));
 
-        menu.setItem(SLOT_SET_BACK, item(Material.ARROW, "gui.back"));
-        admin.openInventory(menu);
+        menu.setItem(SLOT_SET_BACK, item(admin, Material.ARROW, "gui.back"));
+        show(admin, menu);
     }
 
     // ------------------------------------------------------------------ Klicks
@@ -581,6 +620,27 @@ public class VaroGui implements Listener {
         };
     }
 
+    /**
+     * Öffnet das Menü. Mit Pack bekommen leere Slots eine dezente Kachel,
+     * damit die Icons nicht auf dem nackten Raster stehen. Die Kacheln sind
+     * Papier ohne Kopf-Meta, die Klick-Handler ignorieren sie.
+     */
+    private void show(Player viewer, Inventory menu) {
+        if (pack.has(viewer)) {
+            ItemStack filler = new ItemStack(Material.PAPER);
+            ItemMeta meta = filler.getItemMeta();
+            meta.setCustomModelData(FILLER_ICON);
+            meta.displayName(Component.empty());
+            filler.setItemMeta(meta);
+            for (int i = 0; i < menu.getSize(); i++) {
+                if (menu.getItem(i) == null) {
+                    menu.setItem(i, filler);
+                }
+            }
+        }
+        viewer.openInventory(menu);
+    }
+
     private Inventory createMenu(VaroMenuHolder.MenuType type, int size, String titleKey) {
         VaroMenuHolder holder = new VaroMenuHolder(type);
         Inventory menu = Bukkit.createInventory(holder, size, text(Lang.get(titleKey)));
@@ -604,10 +664,18 @@ public class VaroGui implements Listener {
         return stack;
     }
 
-    /** Menüpunkt mit Name aus "<key>.name" und Lore aus "<key>.lore". */
-    private ItemStack item(Material material, String key, Object... args) {
-        ItemStack stack = new ItemStack(material);
+    /**
+     * Menüpunkt mit Name aus "<key>.name" und Lore aus "<key>.lore". Hat der
+     * Betrachter das Resourcepack, wird statt des Vanilla-Items ein Papier
+     * mit custom_model_data gezeigt - das Pack hängt daran das eigene Icon.
+     */
+    private ItemStack item(Player viewer, Material material, String key, Object... args) {
+        Integer icon = ICONS.get(key);
+        ItemStack stack = new ItemStack(icon != null && pack.has(viewer) ? Material.PAPER : material);
         ItemMeta meta = stack.getItemMeta();
+        if (stack.getType() == Material.PAPER) {
+            meta.setCustomModelData(icon);
+        }
         meta.displayName(text(Lang.get(key + ".name", args)));
 
         List<Component> lines = lore(key, args);

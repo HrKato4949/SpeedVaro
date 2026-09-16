@@ -13,6 +13,8 @@ lobby-world: world
 # Befehle, die in der Varo-Welt gesperrt sind, solange eine Runde vorbereitet
 # wird oder läuft. Ohne Slash, Aliase einzeln aufführen. Teleports sind
 # grundsätzlich tabu - sonst holt man Leute rein/raus oder flieht per /back.
+# Dieselben Befehle sind auch von anderen Welten aus gesperrt, wenn ein
+# Varo-Spieler als Ziel angegeben wird (z.B. /tpa <Teilnehmer> vom Spawn).
 blocked-commands:
   - shop
   - tpa
@@ -38,6 +40,15 @@ extra-sugar-cane: true
 block-hostile-mobs: true
 # Nachtsicht für alle Spieler vom Drop bis zum Ende der Farmzeit.
 farm-night-vision: true
+
+# Optionales Resourcepack (eigene Menü-Icons, Herz- und Phasensymbole,
+# eigene Schrift für Titel und Teamnamen). Die Zip muss per HTTP-Link
+# erreichbar sein, z.B. als Datei eines GitHub-Releases. Leer = aus.
+# Die Prüfsumme berechnet das Plugin beim Start selbst. Wer das Pack ablehnt,
+# sieht weiterhin die Standard-Darstellung - außer required steht auf true.
+resource-pack:
+  url: ""
+  required: false
 
 # Beim Start einmal bei Modrinth nachfragen, ob es eine neuere Version gibt.
 # Steht dann in der Konsole und Admins sehen es beim Joinen. Heruntergeladen

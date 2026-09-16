@@ -2,6 +2,8 @@ package de.kato.varo.listeners;
 
 import de.kato.varo.Lang;
 import de.kato.varo.VaroGame;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -16,6 +18,10 @@ import java.util.Set;
  * Sperrt in der Varo-Welt Befehle, die das Spiel aushebeln würden. Zwei
  * Listen in der config.yml: "blocked-commands" gilt, solange eine Runde
  * vorbereitet wird oder läuft, "farm-blocked-commands" nur in der Farmzeit.
+ *
+ * Die dauerhaft gesperrten Befehle sind auch von außen tabu, sobald ein
+ * Varo-Spieler als Ziel genannt wird - sonst schickt jemand vom Spawn aus
+ * /tpa an einen Teilnehmer oder holt ihn per /tpahere aus der Arena.
  */
 public class VaroCommandListener implements Listener {
 
@@ -38,23 +44,36 @@ public class VaroCommandListener implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        if (!game.isInActiveArena(event.getPlayer())) {
-            return;
-        }
+        String[] parts = event.getMessage().substring(1).split(" ");
 
         // "/economyshopgui:shop foo" -> "shop"
-        String label = event.getMessage().substring(1).split(" ", 2)[0].toLowerCase(Locale.ROOT);
+        String label = parts[0].toLowerCase(Locale.ROOT);
         int namespace = label.indexOf(':');
         if (namespace >= 0) {
             label = label.substring(namespace + 1);
         }
 
-        boolean blocked = blockedAlways.contains(label)
-                || (game.getPhase() == VaroGame.Phase.FARM && blockedInFarm.contains(label));
+        Player sender = event.getPlayer();
+        if (game.isInActiveArena(sender)) {
+            boolean blocked = blockedAlways.contains(label)
+                    || (game.getPhase() == VaroGame.Phase.FARM && blockedInFarm.contains(label));
+            if (blocked) {
+                event.setCancelled(true);
+                sender.sendMessage(Lang.get("protection.command-blocked"));
+            }
+            return;
+        }
 
-        if (blocked) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(Lang.get("protection.command-blocked"));
+        // Von außerhalb: gesperrter Befehl mit einem Varo-Spieler als Argument.
+        if (blockedAlways.contains(label)) {
+            for (int i = 1; i < parts.length; i++) {
+                Player target = Bukkit.getPlayerExact(parts[i]);
+                if (target != null && game.isInActiveArena(target)) {
+                    event.setCancelled(true);
+                    sender.sendMessage(Lang.get("protection.target-in-arena", target.getName()));
+                    return;
+                }
+            }
         }
     }
 

@@ -9,7 +9,7 @@ website: https://github.com/HrKato4949/SpeedVaro
 commands:
   varo:
     description: Öffnet das Varo-Menü; /varo reload lädt die Config neu
-    usage: /<command> [reload]
+    usage: /<command> [reload|pack]
   varosetup:
     description: Erstellt eine neue Varo-Arena (Käfig + Worldborder)
     usage: /<command> [bordergröße]

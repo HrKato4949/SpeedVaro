@@ -37,6 +37,7 @@ import de.kato.varo.scoreboard.VaroScoreboardManager;
 public final class VaroMain extends JavaPlugin {
 
     private VaroScoreboardManager scoreboardManager;
+    private VaroResourcePack resourcePack;
     private VaroGlideManager glideManager;
     private VaroCommandListener commandListener;
     private final List<BlockPopulator> populators = new ArrayList<>();
@@ -65,7 +66,8 @@ public final class VaroMain extends JavaPlugin {
         VaroSettings settings = new VaroSettings(this);
         VaroJoinListener joinListener = new VaroJoinListener(game);
         VaroInventoryListener inventoryListener = new VaroInventoryListener(this, game);
-        scoreboardManager = new VaroScoreboardManager(this, game);
+        resourcePack = new VaroResourcePack(this);
+        scoreboardManager = new VaroScoreboardManager(this, game, resourcePack);
         glideManager = new VaroGlideManager(this);
         VaroElevator elevator = new VaroElevator(this, game);
         VaroNightVision nightVision = new VaroNightVision(this, game);
@@ -80,7 +82,7 @@ public final class VaroMain extends JavaPlugin {
         VaroDeathListener deathListener = new VaroDeathListener(this, game, glideManager,
                 new VaroCelebration(this, game), deathChest, nightVision);
         VaroGui gui = new VaroGui(this, game, settings, setupCommand, startCommand, resetCommand,
-                backpackCommand, acceptCommand, joinListener, deathListener);
+                backpackCommand, acceptCommand, joinListener, deathListener, resourcePack);
 
         getServer().getPluginManager().registerEvents(joinListener, this);
         getServer().getPluginManager().registerEvents(inventoryListener, this);
@@ -104,6 +106,8 @@ public final class VaroMain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(gui, this);
         getServer().getPluginManager().registerEvents(scoreboardManager, this);
         getServer().getPluginManager().registerEvents(glideManager, this);
+        getServer().getPluginManager().registerEvents(resourcePack, this);
+        resourcePack.load();
         scoreboardManager.start();
         glideManager.start();
 
@@ -111,7 +115,7 @@ public final class VaroMain extends JavaPlugin {
         getCommand("varoreset").setExecutor(resetCommand);
         getCommand("varostart").setExecutor(startCommand);
         getCommand("varosafenet").setExecutor(new VaroSafenetCommand(joinListener));
-        getCommand("varo").setExecutor(new VaroMenuCommand(gui, this::reload));
+        getCommand("varo").setExecutor(new VaroMenuCommand(gui, this::reload, resourcePack));
         getCommand("varoleave").setExecutor(new VaroLeaveCommand(this, game));
         getCommand("varobackpack").setExecutor(backpackCommand);
         getCommand("varoaccept").setExecutor(acceptCommand);
@@ -173,6 +177,7 @@ public final class VaroMain extends JavaPlugin {
         reloadConfig();
         Lang.load(this);
         commandListener.reload();
+        resourcePack.load();
         applyPopulators();
     }
 

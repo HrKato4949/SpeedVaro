@@ -9,6 +9,11 @@ general:
   arena-only: "&cThat only works in the Varo world."
   world-missing: "&cThe world &f'{0}'&c was not found."   # {0} world name
 
+resource-pack:
+  manual-on: "&aSpeedVaro now uses the resource pack look for you (icons, hearts, fonts). &7Run &f/varo pack&7 again to switch back."
+  manual-off: "&7Back to the default look."
+  prompt: "&6SpeedVaro &7textures: menu icons, hearts and team tags.\n&8Optional - everything works without it."
+
 update:
   available: "&e[SpeedVaro] &fNew version available: &a{0}&f (you are running {1}) &7- &bhttps://modrinth.com/plugin/speedvaro"   # {0} newest, {1} current
 
@@ -77,6 +82,7 @@ safenet:
 protection:
   nether-blocked: "&cThe Nether is disabled in Varo."
   command-blocked: "&cThis command is blocked during Varo."
+  target-in-arena: "&f{0}&c is in a Varo round right now - no teleports or requests to them."   # {0} player
 
 phase:
   none: "No arena"
@@ -97,7 +103,6 @@ team:
   none: "&cYou are not in a team."
   inventory-opened: "&7Opened the inventory of &f{0}&7."
   backpack-title: "{0}&lBackpack &8» {0}{1}"        # {0} colour code, {1} team name
-  nametag: "{0}[{1}] "                               # prefix above the head
   lobby-only: "&cTeams can only be changed in the lobby."
   max-reached: "&cThe maximum number of teams already exists."
   created: "&a{0}{1} &acreated - you joined it."

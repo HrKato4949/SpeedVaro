@@ -1,6 +1,7 @@
 package de.kato.varo;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,6 +26,15 @@ public class VaroTeam {
     private static final NamedTextColor[] COLORS = {
             NamedTextColor.RED, NamedTextColor.BLUE, NamedTextColor.GREEN, NamedTextColor.YELLOW,
             NamedTextColor.AQUA, NamedTextColor.LIGHT_PURPLE, NamedTextColor.GOLD, NamedTextColor.DARK_GREEN
+    };
+
+    // Kräftige Zielfarbe für den Verlauf im Teamschild: von der Teamfarbe
+    // zu einem benachbarten, helleren Ton statt zu Weiß - so bleibt es satt.
+    private static final TextColor[] GRADIENT_END = {
+            TextColor.color(0xFF, 0x8C, 0x5A), TextColor.color(0x5A, 0xE0, 0xFF),
+            TextColor.color(0xB4, 0xFF, 0x5A), TextColor.color(0xFF, 0xF3, 0xA0),
+            TextColor.color(0xA0, 0xFF, 0xF0), TextColor.color(0xFF, 0x9A, 0xE0),
+            TextColor.color(0xFF, 0xE4, 0x5A), TextColor.color(0x6A, 0xDB, 0x8A)
     };
 
     private static final String[] LEGACY_COLORS = {
@@ -80,6 +90,11 @@ public class VaroTeam {
 
     public NamedTextColor getColor() {
         return COLORS[index % COLORS.length];
+    }
+
+    /** Zweite Farbe des Verlaufs im Teamschild. */
+    public TextColor getGradientEnd() {
+        return GRADIENT_END[index % GRADIENT_END.length];
     }
 
     /** Farbcode für die Chat-/Scoreboard-Texte. */

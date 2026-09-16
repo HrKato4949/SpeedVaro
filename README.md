@@ -163,5 +163,3 @@ No gamerules or other world settings are needed – mob spawning and night visio
 SpeedVaro was developed with AI assistance (Claude). The concept, gameplay rules, balancing, testing and every design decision are by the author; the code and this page were written together with an AI coding assistant. Screenshots are real in-game captures.
 
 Source code and issue tracker: [github.com/HrKato4949/SpeedVaro](https://github.com/HrKato4949/SpeedVaro) · License: GPL-3.0
-
-Source code and issue tracker: [github.com/HrKato4949/SpeedVaro](https://github.com/HrKato4949/SpeedVaro) · License: GPL-3.0

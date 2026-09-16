@@ -9,6 +9,9 @@ general:
   arena-only: "&cThat only works in the Varo world."
   world-missing: "&cThe world &f'{0}'&c was not found."   # {0} world name
 
+update:
+  available: "&e[SpeedVaro] &fNew version available: &a{0}&f (you are running {1}) &7- &bhttps://modrinth.com/plugin/speedvaro"   # {0} newest, {1} current
+
 reload:
   done: "&aSpeedVaro config and messages reloaded."
   jar-hint: "&7New plugin versions still require a restart."

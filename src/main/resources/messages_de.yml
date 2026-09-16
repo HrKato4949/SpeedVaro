@@ -7,6 +7,9 @@ general:
   arena-only: "&cDas geht nur in der Varo-Welt."
   world-missing: "&cDie Welt &f'{0}'&c wurde nicht gefunden."
 
+update:
+  available: "&e[SpeedVaro] &fNeue Version verfügbar: &a{0}&f (du nutzt {1}) &7- &bhttps://modrinth.com/plugin/speedvaro"   # {0} neueste, {1} aktuelle
+
 reload:
   done: "&aSpeedVaro-Config und Texte neu geladen."
   jar-hint: "&7Neue Plugin-Versionen brauchen weiterhin einen Neustart."

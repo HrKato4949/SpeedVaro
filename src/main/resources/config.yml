@@ -39,6 +39,11 @@ block-hostile-mobs: true
 # Nachtsicht für alle Spieler vom Drop bis zum Ende der Farmzeit.
 farm-night-vision: true
 
+# Beim Start einmal bei Modrinth nachfragen, ob es eine neuere Version gibt.
+# Steht dann in der Konsole und Admins sehen es beim Joinen. Heruntergeladen
+# wird nichts.
+update-check: true
+
 # Belohnungen für jeden Sieger, als Konsolenbefehle. %player% wird ersetzt.
 # Beispiele: "eco give %player% 1000" (EssentialsX), "points give %player% 50"
 # (PlayerPoints). Leer lassen = keine Belohnung.

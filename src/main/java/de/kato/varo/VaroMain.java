@@ -120,6 +120,10 @@ public final class VaroMain extends JavaPlugin {
 
         Bukkit.getConsoleSender().sendMessage("§a[SpeedVaro] Version " + getDescription().getVersion()
                 + " enabled (language: " + getConfig().getString("language", "en") + ").");
+
+        VaroUpdateChecker updateChecker = new VaroUpdateChecker(this);
+        getServer().getPluginManager().registerEvents(updateChecker, this);
+        updateChecker.check();
     }
 
     /**

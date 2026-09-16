@@ -1,4 +1,3 @@
-
 <img width="1919" height="768" alt="speedVaro_banner" src="https://github.com/user-attachments/assets/5dfa228f-ef10-4fee-9ed2-281c5764e282" />
 
 # SpeedVaro – Hero Island Drop
@@ -17,7 +16,7 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 * **Elytra Drop:** Rounds begin with a 5-second countdown. The glass cage dissolves, and every participant glides down with an unbreakable flight elytra to a landing spot of their choice. The elytra disappears upon landing.
 * **Lives & Respawn (Blue Hearts):** Players start with a configurable number of respawns (default: 3). Dying with hearts left keeps your inventory: you hover as a spectator above the arena for 5 seconds, then glide down again. A death without hearts left is final.
 * **Death Loot Chests:** On final death, the complete inventory (armor, offhand, exact durability, and enchantments) is secured in a double chest at the death spot with a floating 60-second timer. The chest can be opened but not broken, and vanishes with its contents when the timer ends.
-* **Teams & Shared Backpack:** Create and join up to 8 color-coded teams via the menu. Team colors and `[Team X]` prefixes show in the tab list and above heads. Teammates cannot damage each other (though knockback/boosting remains active) and share a 27-slot **team backpack**. Sneak + right-click a teammate to view their inventory.
+* **Teams & Shared Backpack:** Create and join up to 8 color-coded teams via the menu. The team tag above heads and in the tab list reads `Team 1 » Name` – bold team name with a colour gradient, white player name. Teammates cannot damage each other (though knockback/boosting remains active) and share a 27-slot **team backpack**. Sneak + right-click a teammate to view their inventory.
 * **Farm-Time Quality of Life:**
   * No damage, no hunger, and no PvP during the farming phase.
   * Night vision for everyone from the drop until the fight starts – caves and nights are no obstacle.
@@ -32,8 +31,9 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 * **Better World Generation:** Extra diamond veins and much more sugar cane along shores in newly generated arena chunks (both configurable).
 * **Safe Inventories:** Normal player inventories and XP are safely stored on disk when entering the arena world and fully restored upon leaving. Arena loot never leaves the arena.
 * **Winner Celebration:** Title and fanfare, server-wide announcement, fireworks in team colour, configurable reward commands for every winner, and everyone returns to spawn after 10 seconds.
+* **Optional Resource Pack:** Custom menu icons, animated heart glyphs and clean separator lines in the scoreboard, a bold pixel font for the title and team tags, subtle slot tiles in the menus. The server sends it on join; players without the pack keep the default look. See *Resource pack* below.
 * **Update Notice:** Checks Modrinth once at startup and tells the console and admins when a newer version exists. Nothing is downloaded; `update-check: false` turns it off.
-* **Locked Down:** Command blocking (shops, teleports, `/home`, `/back`), disabled Nether portals, and an invitation system with clickable **[Accept] / [Decline]** chat buttons.
+* **Locked Down:** Command blocking (shops, teleports, `/home`, `/back`) – also from other worlds when a Varo player is the target, so nobody can `/tpa` to a participant –, disabled Nether portals, and an invitation system with clickable **[Accept] / [Decline]** chat buttons.
 * **Multilingual:** English and German out of the box; every message is editable and additional languages are a single YAML file away.
 
 ---
@@ -53,6 +53,7 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 ### Players
 
 * `/varo` – Opens the main menu (join/leave, teams, backpack, spectate)
+* `/varo pack` – Toggle the resource pack look for yourself (for packs installed manually in the client)
 * `/varoaccept` / `/varocancel` – Accept or decline a game invitation
 * `/varoleave` (`/leave`) – Leave the arena and restore your normal inventory
 * `/varobackpack` (`/backpack`, `/bp`) – Open your team's shared chest
@@ -65,7 +66,7 @@ Built for **Paper 1.21+** (Java 21). No hard plugin dependencies – see require
 * `/varostart [farmMin] [targetSize] [shrinkSec]` – Start the countdown and drop
 * `/varoreset` – Reset the arena world and send everyone home
 * `/varosafenet <on|off>` – Auto-teleport joining players into the cage during the lobby phase
-* `/varo reload` – Reload config and messages without restarting
+* `/varo reload` – Reload config, messages and the resource pack link without restarting
 
 The admin menu additionally offers a **Settings** page (border size, farm time, target size, shrink time, lives, countdown, chunk pre-generation, start time of day) and **Remove player** for participants who went offline and would otherwise block the win.
 
@@ -89,8 +90,8 @@ language: en               # en or de; add messages_<code>.yml for more
 arena-world: varo          # the only world /varosetup may build in
 lobby-world: world         # where /leave, reset and the post-game return go
 
-blocked-commands:          # blocked in the arena world during a round
-  - shop
+blocked-commands:          # blocked in the arena world during a round,
+  - shop                   # and from other worlds when a Varo player is the target
   - tpa
   - tpahere
   - tpaccept
@@ -111,6 +112,10 @@ block-hostile-mobs: true   # no natural hostile spawns in the arena world (spawn
 farm-night-vision: true    # night vision from the drop until the fight starts
 update-check: true         # notify console and admins about new versions on Modrinth
 
+resource-pack:             # optional, see below; empty url = off
+  url: ""
+  required: false          # true kicks players who decline the pack
+
 win-rewards:               # console commands per winner, %player% is replaced
   - "eco give %player% 1000"
 win-rewards-text: "&a+1000 Money"
@@ -130,6 +135,17 @@ defaults:
 
 `messages_en.yml` and `messages_de.yml` are copied into `plugins/SpeedVaro/` on first start. To add a language, copy `messages_en.yml` to `messages_<code>.yml`, translate the values (keep the `{0}` placeholders and `&` colour codes), and set `language: <code>`. Any key missing from your file falls back to English.
 
+### Resource pack
+
+`SpeedVaro-Pack.zip` (attached to every release) gives the plugin its own look: menu icons, heart glyphs with a travelling shine, separator lines, a bold pixel font for the sidebar title and the team tags. The plugin only uses these for players who have loaded the pack, so it is safe to offer – everyone else sees the default look.
+
+1. Host the zip anywhere reachable by plain HTTP(S). The release asset works as is:
+   `https://github.com/HrKato4949/SpeedVaro/releases/download/v1.0.5/SpeedVaro-Pack.zip`
+2. Put the link into `resource-pack.url` and run `/varo reload`. The plugin downloads the file once to compute the checksum and sends the pack to every player on join.
+3. `required: true` kicks players who decline; the default lets them play without it.
+
+The sources live in `resourcepack/`. `python resourcepack/build.py` (needs Pillow) generates missing textures as drafts, writes both item model formats (pre-1.21.4 and current) and zips the pack. Edit the PNGs under `resourcepack/pack/assets/speedvaro/textures/` in any pixel editor and rebuild – your edits are kept. Glyphs under `font/` must stay white/grey: Minecraft tints them with the text colour. While designing, load the zip in your client, run `/varo pack` once and reload textures with F3+T after every rebuild.
+
 ---
 
 ## Requirements
@@ -145,7 +161,7 @@ No gamerules or other world settings are needed – mob spawning and night visio
 * **A permissions plugin** (e.g. LuckPerms) to hand out `varo.admin` / `varo.invite` to non-ops
 * **An economy or points plugin** (EssentialsX, PlayerPoints, …) if you want winner rewards – the plugin runs whatever console commands you put in `win-rewards`
 * **Chunky** to pre-generate the whole arena area (SpeedVaro pre-generates only the centre)
-* **TAB** – compatible, but its nametag feature must be disabled for the arena world so team prefixes show (`scoreboard-teams.disable-condition: '%world%=varo'`)
+* **TAB** – compatible, but its nametag feature must be disabled for the arena world so team tags show (`scoreboard-teams.disable-condition: '%world%=varo'`)
 
 ---
 
@@ -155,6 +171,7 @@ No gamerules or other world settings are needed – mob spawning and night visio
 2. Create the arena world, e.g. `/mv create varo NORMAL`.
 3. Set `lobby-world` in the config to your hub/spawn world (and `language` if you want German).
 4. Optional: for a fully pre-generated arena, run Chunky on the coordinates printed by `/varosetup`.
+5. Optional: set `resource-pack.url` to the pack link above for the custom look.
 
 ---
 
